@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="DigitalLibrary.BusinessLogic/DigitalLibrary.BusinessLogic.csproj" />
+  <Project Path="DigitalLibrary.DataAccess/DigitalLibrary.DataAccess.csproj" />
+  <Project Path="DigitalLibrary.Models/DigitalLibrary.Models.csproj" />
+  <Project Path="DigitalLibrary/DigitalLibrary.csproj" />
+</Solution>
