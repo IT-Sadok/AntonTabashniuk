@@ -6,12 +6,15 @@ namespace DigitalLibrary.DataAccess.BookRepository;
 public class JsonBookRepository : IBookRepository
 {
     private readonly string _filePath;
-    private readonly JsonSerializerOptions _jsonOptions;
+    private List<BookItem> _books;
+    private readonly static JsonSerializerOptions _jsonOptions = new() 
+    {
+        WriteIndented = true
+    };
     public JsonBookRepository(string filePath)
     {
         _filePath = filePath;
-        _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-    }
+    } 
     public async Task<bool> AddBook(BookItem book)
     {
         var books = await GetAllBooks();

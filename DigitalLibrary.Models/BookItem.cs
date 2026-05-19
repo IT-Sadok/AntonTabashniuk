@@ -5,7 +5,6 @@ namespace DigitalLibrary.Models;
 
 public class BookItem
 {
-    [Description("Book ID")]
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Author { get; set; }
