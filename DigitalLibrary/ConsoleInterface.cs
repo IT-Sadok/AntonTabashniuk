@@ -9,8 +9,8 @@ namespace DigitalLibrary;
 
 public class ConsoleInterface
 {
-    private readonly LibraryService _libraryService;
-    public ConsoleInterface(LibraryService libraryService)
+    private readonly ILibraryService _libraryService;
+    public ConsoleInterface(ILibraryService libraryService)
     {
         _libraryService = libraryService ?? throw new ArgumentNullException(nameof(libraryService));
     }

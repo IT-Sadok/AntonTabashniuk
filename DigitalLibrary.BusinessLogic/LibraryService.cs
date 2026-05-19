@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace DigitalLibrary.BusinessLogic;
 
-public class LibraryService
+public class LibraryService : ILibraryService
 {
     private readonly IBookRepository _repository;
 
