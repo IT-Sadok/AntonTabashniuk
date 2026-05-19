@@ -2,14 +2,19 @@
 using DigitalLibrary.ConsoleHelpers;
 using DigitalLibrary.Models;
 using DigitalLibrary.Models.Enums;
-using System.ComponentModel;
-using System.Reflection;
 
 namespace DigitalLibrary;
 
 public class ConsoleInterface
 {
     private readonly ILibraryService _libraryService;
+    private readonly static Dictionary<int, (string Name, Func<BookItem, string?> Selector)> _searchOptions = new()
+        {
+            { 1, ("Title", x => x.Title) },
+            { 2, ("Author", x => x.Author) },
+            { 3, ("Description", x => x.Description) }
+        };
+
     public ConsoleInterface(ILibraryService libraryService)
     {
         _libraryService = libraryService ?? throw new ArgumentNullException(nameof(libraryService));
@@ -87,7 +92,7 @@ public class ConsoleInterface
         {
             foreach (var book in books)
             {
-                WriteToConsoleHelper.WriteClassPropertiesValue<BookItem>(book);
+                WriteToConsoleHelper.WriteBook(book);
             }
         }
         Console.WriteLine("Press Enter to return to the main menu...");
@@ -161,6 +166,48 @@ public class ConsoleInterface
             throw;
         }
     }
+    private async Task FindBook()
+    {
+        Console.Clear();
+
+        foreach (var option in _searchOptions)
+        {
+            Console.WriteLine($"{option.Key}. {option.Value.Name}");
+        }
+
+        Console.WriteLine("0. Go back");
+
+        Console.Write("\nSelect a search option: ");
+
+        var input = Console.ReadLine();
+
+        if (!int.TryParse(input, out int choice))
+        {
+            Console.WriteLine("❌ Choice incorrect!");
+            return;
+        }
+
+        if (choice == 0)
+            return;
+
+        if (!_searchOptions.TryGetValue(choice, out var selectedOption))
+        {
+            Console.WriteLine("❌ Choice incorrect!");
+            return;
+        }
+
+        Console.Write($"\nEnter search value for '{selectedOption.Name}': ");
+
+        var searchValue = Console.ReadLine()?.Trim();
+
+        if (string.IsNullOrWhiteSpace(searchValue))
+        {
+            Console.WriteLine("❌ Value can not be null.");
+            return;
+        }
+
+        await SearchByStringAsync(selectedOption.Name, searchValue);
+    }
     private async Task DeleteBook()
     {
         Console.Write("\nEnter book ID to delete: ");
@@ -185,52 +232,7 @@ public class ConsoleInterface
         Console.ReadLine();
 
     }
-    private async Task FindBook()
-    {
-        Console.Clear();
-        var properties = typeof(BookItem)
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(p => p.CanRead && p.PropertyType == typeof(string))
-            .ToList();
 
-        for (int i = 0; i < properties.Count; i++)
-        {
-            var attribute = properties[i].GetCustomAttribute<DescriptionAttribute>();
-            if (attribute is not null)
-            {
-                Console.WriteLine($"{i + 1}. {attribute.Description}");
-                continue;
-            }
-            Console.WriteLine($"{i + 1}. {properties[i].Name}");
-
-        }
-        Console.WriteLine($"0. Go back");
-
-        Console.Write("\nSelect a search option: ");
-        var input = Console.ReadLine();
-
-
-        if (!int.TryParse(input, out int choice) || choice < 1 || choice > properties.Count + 1)
-        {
-            Console.WriteLine("❌ Choise incorrect!");
-            return;
-        }
-
-        if (choice == 0) return;
-
-        var selectedProperty = properties[choice - 1];
-
-        Console.Write($"\nEnter search value for '{selectedProperty.Name}': ");
-        var searchValue = Console.ReadLine()?.Trim();
-
-        if (string.IsNullOrEmpty(searchValue))
-        {
-            Console.WriteLine("❌ Value can not be null.");
-            return;
-        }
-
-        await SearchByPropertyAsync(selectedProperty, searchValue);
-    }
     private async Task ChangeBookStatus()
     {
         Console.Clear();
@@ -282,22 +284,22 @@ public class ConsoleInterface
     #endregion
 
     #region Helpers method
-    private async Task SearchByPropertyAsync(PropertyInfo property, string searchValue)
+    private async Task SearchByStringAsync(string propertyName, string searchValue)
     {
         try
         {
-            var results = await _libraryService.SearchByProperty(property, searchValue);
+            var results = await _libraryService.SearchByString(searchValue);
 
             if (results is null || results.Count == 0)
             {
-                Console.WriteLine($"\nNo book found with '{property.Name}' as {searchValue}.");
+                Console.WriteLine($"\nNo book found with '{propertyName}' as {searchValue}.");
             }
             else
             {
                 foreach (var book in results)
                 {
                     Console.WriteLine($"\nFound book {book.Title}:");
-                    WriteToConsoleHelper.WriteClassPropertiesValue<BookItem>(book);
+                    WriteToConsoleHelper.WriteBook(book);
                 }
             }
             Console.Write("\nPress Enter to return: ");

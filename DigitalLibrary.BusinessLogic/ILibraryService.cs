@@ -9,5 +9,5 @@ public interface ILibraryService
     Task<bool> UpdateBook(BookItem book);
     Task<BookItem?> GetBookById(int id);
     Task<List<BookItem>?> GetAllBooks();
-    Task<List<BookItem>?> SearchByProperty(PropertyInfo property, string searchValue);
+    Task<List<BookItem>?> SearchByString(string searchValue);
 }

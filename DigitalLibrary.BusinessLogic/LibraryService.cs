@@ -64,27 +64,25 @@ public class LibraryService : ILibraryService
         return books;
     }
 
-    public async Task<List<BookItem>?> SearchByProperty(PropertyInfo property, string searchValue)
+    public async Task<List<BookItem>?> SearchByString(string searchValue)
     {
         var books = await _repository.GetAllBooks();
         
         if (books is null || books.Count == 0) return books; 
 
         var result = books.Where(book =>
-        {
-            object? value = property.GetValue(book);
-
-            if (value is null)
-                return false;
-
-            if (value is string stringValue)
-            {
-                return stringValue.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
-            }
-
-            return false;
-        }).ToList();
+            ContainsValue(book.Title, searchValue) ||
+            ContainsValue(book.Author, searchValue) ||
+            ContainsValue(book.Description, searchValue)
+            ).ToList();
 
         return result;
     }
+
+    #region Helpers methods
+    private static bool ContainsValue(string? source, string value)
+    {
+        return source?.Contains(value, StringComparison.OrdinalIgnoreCase) ?? false;
+    } 
+    #endregion
 }
