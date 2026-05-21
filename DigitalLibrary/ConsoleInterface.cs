@@ -100,6 +100,7 @@ public class ConsoleInterface
     }
     private async Task AddBook()
     {
+        Console.Clear();
         Console.WriteLine("Enter the title of the book: ");
         var title = Console.ReadLine();
 
