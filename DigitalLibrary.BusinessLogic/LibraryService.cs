@@ -1,7 +1,7 @@
-﻿using DigitalLibrary.DataAccess.BookRepository;
+﻿using DigitalLibrary.BusinessLogic.Extensions;
+using DigitalLibrary.DataAccess.BookRepository;
 using DigitalLibrary.Models;
 using DigitalLibrary.Models.Enums;
-using System.Reflection;
 
 namespace DigitalLibrary.BusinessLogic;
 
@@ -71,18 +71,11 @@ public class LibraryService : ILibraryService
         if (books is null || books.Count == 0) return books; 
 
         var result = books.Where(book =>
-            ContainsValue(book.Title, searchValue) ||
-            ContainsValue(book.Author, searchValue) ||
-            ContainsValue(book.Description, searchValue)
+            book.Title.ContainsValue(searchValue) ||
+            book.Author.ContainsValue(searchValue) ||
+            book.Description.ContainsValue(searchValue)
             ).ToList();
 
         return result;
     }
-
-    #region Helpers methods
-    private static bool ContainsValue(string? source, string value)
-    {
-        return source?.Contains(value, StringComparison.OrdinalIgnoreCase) ?? false;
-    } 
-    #endregion
 }
