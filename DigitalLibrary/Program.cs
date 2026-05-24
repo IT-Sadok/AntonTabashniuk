@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 var serviceProvider = new ServiceCollection()
     .AddSingleton<IBookRepository>(new JsonBookRepository("library_data.json"))
-    .AddSingleton<LibraryService>()
+    .AddSingleton<ILibraryService, LibraryService>()
     .AddSingleton<ConsoleInterface>()
     .BuildServiceProvider();
 

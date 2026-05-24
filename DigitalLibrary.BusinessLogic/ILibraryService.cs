@@ -1,13 +1,13 @@
 ﻿using DigitalLibrary.Models;
+using System.Reflection;
 
-namespace DigitalLibrary.DataAccess.BookRepository;
-
-public interface IBookRepository
+namespace DigitalLibrary.BusinessLogic;
+public interface ILibraryService
 {
     Task<bool> AddBook(BookItem book);
     Task<bool> DeleteBook(int id);
     Task<bool> UpdateBook(BookItem book);
     Task<BookItem?> GetBookById(int id);
     Task<List<BookItem>?> GetAllBooks();
-    Task<int> GetBooksCount();
+    Task<List<BookItem>?> SearchByString(string searchValue);
 }

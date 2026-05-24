@@ -1,104 +1,151 @@
 ﻿using DigitalLibrary.Models;
 using System.Text.Json;
 
-namespace DigitalLibrary.DataAccess.BookRepository
+namespace DigitalLibrary.DataAccess.BookRepository;
+
+public class JsonBookRepository : IBookRepository
 {
-    public class JsonBookRepository : IBookRepository
+    private readonly string _filePath;
+    private List<BookItem>? _booksCache;
+    private bool _hasChanges = true;
+    private readonly static JsonSerializerOptions _jsonOptions = new()
     {
-        private readonly string _filePath;
-        private readonly JsonSerializerOptions _jsonOptions;
-        public JsonBookRepository(string filePath)
+        WriteIndented = true
+    };
+    private List<BookItem>? BooksCache
+    {
+        get => _booksCache;
+        set
         {
-            _filePath = filePath;
-            _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+            _booksCache = value;
+            _hasChanges = false;
         }
-        public async Task<bool> AddBook(BookItem book)
-        {
-            var books = await GetAllBooks();
+    }
+    public JsonBookRepository(string filePath)
+    {
+        _filePath = filePath;
+    }
+    public async Task<bool> AddBook(BookItem book)
+    {
+        var books = await GetAllBooks();
 
-            if (books is not null)
+        if (books is not null)
+        {
+            if (book.Id == 0)
             {
-                if (book.Id == 0)
-                {
-                    book.Id = books.Count > 0 ? books.Max(b => b.Id) + 1 : 1;
-                }
-                books.Add(book);
-                return await SaveBookItemsAsync(books);
+                book.Id = books.Count > 0 ? books.Max(b => b.Id) + 1 : 1;
+            }
+            books.Add(book);
+            if (await SaveBookItemsAsync(books))
+            {
+                _hasChanges = true;
+                return true;
             }
             return false;
         }
+        return false;
+    }
 
-        public async Task<bool> DeleteBook(int id)
+    public async Task<bool> DeleteBook(int id)
+    {
+        var books = await GetAllBooks();
+
+        if (books is null)
         {
-            var books = await LoadBookItemsAsync();
-            var bookToDelete = books.FirstOrDefault(b => b?.Id == id);
-
-            if (bookToDelete is not null)
-            {
-                books.Remove(bookToDelete);
-                return await SaveBookItemsAsync(books);
-            }
             return false;
         }
 
-        public async Task<List<BookItem>?> GetAllBooks()
-        {
-            return await LoadBookItemsAsync();
-        }
+        var bookToDelete = books.FirstOrDefault(b => b?.Id == id);
 
-        public async Task<BookItem?> GetBookById(int id)
+        if (bookToDelete is not null)
         {
-            var books = await LoadBookItemsAsync();
-            return books.FirstOrDefault(b => b?.Id == id);
-        }
-
-        public async Task<int> GetBooksCount()
-        {
-            return (await LoadBookItemsAsync()).Count;
-        }
-
-        public async Task<bool> UpdateBook(BookItem book)
-        {
-
-            if (book is null)
+            books.Remove(bookToDelete);
+            if (await SaveBookItemsAsync(books))
             {
-                return false;
-            }
-
-            var books = await LoadBookItemsAsync();
-            var bookToUpdate = books.FirstOrDefault(b => b?.Id == book.Id);
-
-            if (bookToUpdate is not null)
-            {
-                int bookIndex = books.FindIndex(b => b?.Id == bookToUpdate.Id);
-
-                books[bookIndex] = book;
-
-                return await SaveBookItemsAsync(books);
+                _hasChanges = true;
+                return true;
             }
             return false;
         }
+        return false;
+    }
 
-        private async Task<List<BookItem>> LoadBookItemsAsync()
+    public async Task<List<BookItem>?> GetAllBooks()
+    {
+        await EnsureBooksCacheUpdatedAsync();
+        return BooksCache;
+    }
+
+    public async Task<BookItem?> GetBookById(int id)
+    {
+        await EnsureBooksCacheUpdatedAsync();
+        return BooksCache?.FirstOrDefault(b => b?.Id == id);
+    }
+
+    public async Task<int> GetBooksCount()
+    {
+        await EnsureBooksCacheUpdatedAsync();
+        return BooksCache is null ? 0 : BooksCache.Count;
+    }
+
+    public async Task<bool> UpdateBook(BookItem book)
+    {
+
+        if (book is null)
         {
-            if (!File.Exists(_filePath))
-                return new List<BookItem>();
-
-            string json = await File.ReadAllTextAsync(_filePath);
-
-            return JsonSerializer.Deserialize<List<BookItem>>(json) ?? new List<BookItem>();
+            return false;
         }
-        private async Task<bool> SaveBookItemsAsync(List<BookItem> books)
+
+        var books = await GetAllBooks();
+
+        if (books is null)
         {
-            if (books is null)
+            return false;
+        }
+
+        var bookToUpdate = books.FirstOrDefault(b => b?.Id == book.Id);
+
+        if (bookToUpdate is not null)
+        {
+            int bookIndex = books.FindIndex(b => b?.Id == bookToUpdate.Id);
+
+            books[bookIndex] = book;
+
+            if (await SaveBookItemsAsync(books))
             {
-                return false;
+                _hasChanges = true;
+                return true;
             }
+        }
+        return false;
+    }
 
-            string json = JsonSerializer.Serialize(books, _jsonOptions);
+    private async Task<List<BookItem>> LoadBookItemsAsync()
+    {
+        if (!File.Exists(_filePath))
+            return new List<BookItem>();
 
-            await File.WriteAllTextAsync(_filePath, json);
-            return true;
+        string json = await File.ReadAllTextAsync(_filePath);
+
+        return JsonSerializer.Deserialize<List<BookItem>>(json) ?? new List<BookItem>();
+    }
+    private async Task<bool> SaveBookItemsAsync(List<BookItem> books)
+    {
+        if (books is null)
+        {
+            return false;
+        }
+
+        string json = JsonSerializer.Serialize(books, _jsonOptions);
+
+        await File.WriteAllTextAsync(_filePath, json);
+        return true;
+    }
+    private async Task EnsureBooksCacheUpdatedAsync()
+    {
+        if (_hasChanges)
+        {
+            BooksCache = await LoadBookItemsAsync();
         }
     }
 }
