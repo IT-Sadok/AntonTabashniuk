@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DigitalLibrary.BusinessLogic\DigitalLibrary.BusinessLogic.csproj" />
+    <ProjectReference Include="..\DigitalLibrary.DataAccess\DigitalLibrary.DataAccess.csproj" />
     <ProjectReference Include="..\DigitalLibrary.Models\DigitalLibrary.Models.csproj" />
   </ItemGroup>
 
