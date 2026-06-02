@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="DigitalLibrary.BusinessLogic/DigitalLibrary.BusinessLogic.csproj" />
+  <Project Path="DigitalLibrary.ConcurrentTests/DigitalLibrary.ConcurrentTests.csproj" Id="7504b055-ad1b-4d54-94d5-03305353850f" />
   <Project Path="DigitalLibrary.DataAccess/DigitalLibrary.DataAccess.csproj" />
   <Project Path="DigitalLibrary.Models/DigitalLibrary.Models.csproj" />
   <Project Path="DigitalLibrary/DigitalLibrary.csproj" />

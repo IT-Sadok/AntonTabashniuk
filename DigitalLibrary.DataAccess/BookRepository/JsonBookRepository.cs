@@ -8,6 +8,7 @@ public class JsonBookRepository : IBookRepository
     private readonly string _filePath;
     private List<BookItem>? _booksCache;
     private bool _hasChanges = true;
+    private readonly SemaphoreSlim _fileLock = new SemaphoreSlim(1, 1);
     private readonly static JsonSerializerOptions _jsonOptions = new()
     {
         WriteIndented = true
@@ -27,97 +28,148 @@ public class JsonBookRepository : IBookRepository
     }
     public async Task<bool> AddBook(BookItem book)
     {
-        var books = await GetAllBooks();
-
-        if (books is not null)
+        await _fileLock.WaitAsync();
+        try
         {
-            if (book.Id == 0)
+            await EnsureBooksCacheUpdatedAsync();
+            var books = BooksCache;
+
+            if (books is not null)
             {
-                book.Id = books.Count > 0 ? books.Max(b => b.Id) + 1 : 1;
-            }
-            books.Add(book);
-            if (await SaveBookItemsAsync(books))
-            {
-                _hasChanges = true;
-                return true;
+                if (book.Id == 0)
+                {
+                    book.Id = books.Count > 0 ? books.Max(b => b.Id) + 1 : 1;
+                }
+                books.Add(book);
+                if (await SaveBookItemsAsync(books))
+                {
+                    _hasChanges = true;
+                    return true;
+                }
+                return false;
             }
             return false;
         }
-        return false;
+        finally
+        {
+            _fileLock.Release();
+        }
     }
 
     public async Task<bool> DeleteBook(int id)
     {
-        var books = await GetAllBooks();
-
-        if (books is null)
+        await _fileLock.WaitAsync();
+        try
         {
-            return false;
-        }
+            await EnsureBooksCacheUpdatedAsync();
+            var books = BooksCache;
 
-        var bookToDelete = books.FirstOrDefault(b => b?.Id == id);
-
-        if (bookToDelete is not null)
-        {
-            books.Remove(bookToDelete);
-            if (await SaveBookItemsAsync(books))
+            if (books is null)
             {
-                _hasChanges = true;
-                return true;
+                return false;
+            }
+
+            var bookToDelete = books.FirstOrDefault(b => b?.Id == id);
+
+            if (bookToDelete is not null)
+            {
+                books.Remove(bookToDelete);
+                if (await SaveBookItemsAsync(books))
+                {
+                    _hasChanges = true;
+                    return true;
+                }
+                return false;
             }
             return false;
         }
-        return false;
+        finally
+        {
+            _fileLock.Release();
+        }
     }
 
     public async Task<List<BookItem>?> GetAllBooks()
     {
-        await EnsureBooksCacheUpdatedAsync();
-        return BooksCache;
+        await _fileLock.WaitAsync();
+        try
+        {
+            await EnsureBooksCacheUpdatedAsync();
+            return BooksCache;
+        }
+        finally
+        {
+            _fileLock.Release();
+        }
     }
 
     public async Task<BookItem?> GetBookById(int id)
     {
-        await EnsureBooksCacheUpdatedAsync();
-        return BooksCache?.FirstOrDefault(b => b?.Id == id);
+        await _fileLock.WaitAsync();
+        try
+        {
+            await EnsureBooksCacheUpdatedAsync();
+            return BooksCache?.FirstOrDefault(b => b?.Id == id);
+        }
+        finally
+        {
+            _fileLock.Release();
+        }
     }
 
     public async Task<int> GetBooksCount()
     {
-        await EnsureBooksCacheUpdatedAsync();
-        return BooksCache is null ? 0 : BooksCache.Count;
+        await _fileLock.WaitAsync();
+        try
+        {
+            await EnsureBooksCacheUpdatedAsync();
+            return BooksCache is null ? 0 : BooksCache.Count;
+        }
+        finally
+        {
+            _fileLock.Release();
+        }
     }
 
     public async Task<bool> UpdateBook(BookItem book)
     {
-
-        if (book is null)
+        await _fileLock.WaitAsync();
+        try
         {
-            return false;
-        }
 
-        var books = await GetAllBooks();
-
-        if (books is null)
-        {
-            return false;
-        }
-
-        var bookToUpdate = books.FirstOrDefault(b => b?.Id == book.Id);
-
-        if (bookToUpdate is not null)
-        {
-            int bookIndex = books.FindIndex(b => b?.Id == bookToUpdate.Id);
-
-            books[bookIndex] = book;
-
-            if (await SaveBookItemsAsync(books))
+            if (book is null)
             {
-                _hasChanges = true;
-                return true;
+                return false;
             }
+
+            await EnsureBooksCacheUpdatedAsync();
+            var books = BooksCache;
+
+            if (books is null)
+            {
+                return false;
+            }
+
+            var bookToUpdate = books.FirstOrDefault(b => b?.Id == book.Id);
+
+            if (bookToUpdate is not null)
+            {
+                int bookIndex = books.FindIndex(b => b?.Id == bookToUpdate.Id);
+
+                books[bookIndex] = book;
+
+                if (await SaveBookItemsAsync(books))
+                {
+                    _hasChanges = true;
+                    return true;
+                }
+            }
+            return false;
         }
-        return false;
+        finally
+        {
+            _fileLock.Release();
+        }
     }
 
     private async Task<List<BookItem>> LoadBookItemsAsync()
