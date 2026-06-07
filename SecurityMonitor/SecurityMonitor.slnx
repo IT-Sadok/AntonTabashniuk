@@ -1,0 +1,34 @@
+<Solution>
+  <Folder Name="/docker/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Folder Name="/frontend/">
+    <Project Path="security-monitor-web/" Type="Website" DisplayName="security-monitor-web">
+      <BuildType Project="Debug" />
+      <Properties Name="WebsiteProperties">
+        <Property Name="Debug.AspNetCompiler.Debug" Value="&quot;True&quot;" />
+        <Property Name="Debug.AspNetCompiler.FixedNames" Value="&quot;false&quot;" />
+        <Property Name="Debug.AspNetCompiler.ForceOverwrite" Value="&quot;true&quot;" />
+        <Property Name="Debug.AspNetCompiler.PhysicalPath" Value="&quot;security-monitor-web\&quot;" />
+        <Property Name="Debug.AspNetCompiler.TargetPath" Value="&quot;PrecompiledWeb\localhost_53068\&quot;" />
+        <Property Name="Debug.AspNetCompiler.Updateable" Value="&quot;true&quot;" />
+        <Property Name="Debug.AspNetCompiler.VirtualPath" Value="&quot;/localhost_53068&quot;" />
+        <Property Name="Release.AspNetCompiler.Debug" Value="&quot;False&quot;" />
+        <Property Name="Release.AspNetCompiler.FixedNames" Value="&quot;false&quot;" />
+        <Property Name="Release.AspNetCompiler.ForceOverwrite" Value="&quot;true&quot;" />
+        <Property Name="Release.AspNetCompiler.PhysicalPath" Value="&quot;security-monitor-web\&quot;" />
+        <Property Name="Release.AspNetCompiler.TargetPath" Value="&quot;PrecompiledWeb\localhost_53068\&quot;" />
+        <Property Name="Release.AspNetCompiler.Updateable" Value="&quot;true&quot;" />
+        <Property Name="Release.AspNetCompiler.VirtualPath" Value="&quot;/localhost_53068&quot;" />
+        <Property Name="VWDPort" Value="&quot;53068&quot;" />
+      </Properties>
+    </Project>
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="Monitoring.Api/Monitoring.Api.csproj" Id="3554c2e6-d981-48ef-84e1-fc148edd0036" />
+    <Project Path="Monitoring.Application/Monitoring.Application.csproj" Id="a2206632-4c0e-49ab-b648-1ba6aeebddbd" />
+    <Project Path="Monitoring.Contracts/Monitoring.Contracts.csproj" Id="47d3b3ef-1ad4-4b75-a8c8-98bec47bbc7d" />
+    <Project Path="Monitoring.Domain/Monitoring.Domain.csproj" Id="28d74be4-49b5-490a-8389-1b069106123c" />
+    <Project Path="Monitoring.Infrastructure/Monitoring.Infrastructure.csproj" Id="0639eb94-73a3-4c7b-96ef-9d82f3093afd" />
+  </Folder>
+</Solution>
