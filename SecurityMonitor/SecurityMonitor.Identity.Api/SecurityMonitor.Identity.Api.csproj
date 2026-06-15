@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SecurityMonitor.Identity.Application\SecurityMonitor.Identity.Application.csproj" />
+    <ProjectReference Include="..\SecurityMonitor.Identity.Infrastructure\SecurityMonitor.Identity.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
