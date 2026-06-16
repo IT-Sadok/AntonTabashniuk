@@ -1,0 +1,31 @@
+services:
+  postgres-db:
+    image: postgres:17 
+    container_name: security_monitoring_db 
+    restart: unless-stopped 
+    environment:
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: postgres 
+      POSTGRES_DB: identity 
+    ports:
+      - "5432:5432" 
+    volumes:
+      - pg_data:/var/lib/postgresql/data 
+      
+  pgadmin:
+    image: dpage/pgadmin4 
+    container_name: security_monitoring_pgadmin 
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com 
+      PGADMIN_DEFAULT_PASSWORD: admin 
+    ports:
+      - "8080:80" # connection address http://localhost:8080
+    depends_on:
+      - postgres-db 
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      
+volumes:
+  pg_data:
+  pgadmin_data:
