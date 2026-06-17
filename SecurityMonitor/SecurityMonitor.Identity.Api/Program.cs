@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SecurityMonitor.Identity.Api.Endpoints.Auth;
 using SecurityMonitor.Identity.Application.Authentication;
 using SecurityMonitor.Identity.Application.Authentication.Login;
 using SecurityMonitor.Identity.Application.Authentication.Register;
@@ -24,33 +25,8 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.MapPost("/auth/register", 
-    async (RegisterCommand command, RegisterHandler handler, CancellationToken ct) =>
-    {
-        var result = await handler.Handle(command, ct);
-
-        if (!result.IsSuccess)
-        {
-            return Results.BadRequest(result.Error);
-        }
-
-        return Results.Ok();
-    });
-
-app.MapPost("/auth/login",
-    async (LoginCommand command, LoginHandler handler, CancellationToken ct) =>
-    {
-        var result = await handler.Handle(command, ct);
-
-        if (!result.IsSuccess)
-        {
-            return Results.BadRequest(result.Error);
-        }
-
-        return Results.Ok();
-    });
-
 app.UseHttpsRedirection();
+app.MapAuthEndpoints();
 
 app.UseAuthentication();
 app.UseAuthorization();
