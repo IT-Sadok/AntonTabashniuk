@@ -24,29 +24,33 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
-}
-
 app.MapPost("/auth/register", 
-    async (RegisterCommand command, RegisterHandler handler) =>
+    async (RegisterCommand command, RegisterHandler handler, CancellationToken ct) =>
     {
-        await handler.Handle(command);
+        var result = await handler.Handle(command, ct);
+
+        if (!result.IsSuccess)
+        {
+            return Results.BadRequest(result.Error);
+        }
+
         return Results.Ok();
     });
 
 app.MapPost("/auth/login",
-    async (LoginCommand command, LoginHandler handler) =>
+    async (LoginCommand command, LoginHandler handler, CancellationToken ct) =>
     {
-        await handler.Handle(command);
+        var result = await handler.Handle(command, ct);
+
+        if (!result.IsSuccess)
+        {
+            return Results.BadRequest(result.Error);
+        }
+
         return Results.Ok();
     });
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();

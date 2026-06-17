@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SecurityMonitor.Identity.Application.ResultPattern;
 
-namespace SecurityMonitor.Identity.Application.Authentication.Login
+namespace SecurityMonitor.Identity.Application.Authentication.Login;
+
+public sealed class LoginHandler
 {
-    public sealed class LoginHandler
+    private readonly IIdentityService identityService;
+    public LoginHandler(IIdentityService identityService)
     {
-        private readonly IIdentityService identityService;
-        public LoginHandler(IIdentityService identityService)
-        {
-            this.identityService = identityService;
-        }
+        this.identityService = identityService;
+    }
 
-        public async Task Handle(LoginCommand command)
-        {
-            await identityService.LoginAsync(command.Email, command.Password);
-        }
+    public async Task<Result> Handle(LoginCommand command, CancellationToken ct)
+    {
+        return await identityService.LoginAsync(command.Email, command.Password, ct);
     }
 }

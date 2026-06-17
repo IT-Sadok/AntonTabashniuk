@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SecurityMonitor.Identity.Application.ResultPattern;
 
-namespace SecurityMonitor.Identity.Application.Authentication.Register
+namespace SecurityMonitor.Identity.Application.Authentication.Register;
+
+public sealed class RegisterHandler
 {
-    public sealed class RegisterHandler
+    private readonly IIdentityService identityService;
+
+    public RegisterHandler(IIdentityService identityService) 
     {
-        private readonly IIdentityService identityService;
+        this.identityService = identityService;
+    }
 
-        public RegisterHandler(IIdentityService identityService) 
-        {
-            this.identityService = identityService;
-        }
-
-        public async Task Handle(RegisterCommand command)
-        {
-            await identityService.RegisterAsync(command.Email, command.Password);
-        }
+    public async Task<Result> Handle(RegisterCommand command, CancellationToken ct)
+    {
+        return await identityService.RegisterAsync(command.Email, command.Password, ct);
     }
 }
