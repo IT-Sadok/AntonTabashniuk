@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using SecurityMonitor.Identity.Application.Authentication;
+using SecurityMonitor.Identity.Application.Authentication.Login;
+using SecurityMonitor.Identity.Application.Authentication.Register;
 using SecurityMonitor.Identity.Domain;
 using SecurityMonitor.Identity.Infrastructure;
 
@@ -12,6 +15,10 @@ builder.Services
     .AddIdentityCore<ApplicationUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddScoped<IIdentityService,IdentityService>(); 
+builder.Services.AddScoped<RegisterHandler>();
+builder.Services.AddScoped<LoginHandler>();
+
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
@@ -23,7 +30,19 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.MapGet("/", () => "Hello World!");
+app.MapPost("/auth/register", 
+    async (RegisterCommand command, RegisterHandler handler) =>
+    {
+        await handler.Handle(command);
+        return Results.Ok();
+    });
+
+app.MapPost("/auth/login",
+    async (LoginCommand command, LoginHandler handler) =>
+    {
+        await handler.Handle(command);
+        return Results.Ok();
+    });
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
