@@ -1,4 +1,4 @@
-﻿using SecurityMonitor.Identity.Application.ResultPattern;
+﻿using SecurityMonitor.Identity.Application.Common;
 
 namespace SecurityMonitor.Identity.Application.Authentication.Register;
 
@@ -11,7 +11,7 @@ public sealed class RegisterHandler
         this.identityService = identityService;
     }
 
-    public async Task<Result> Handle(RegisterCommand command, CancellationToken ct)
+    public async Task<Result<bool>> Handle(RegisterCommand command, CancellationToken ct)
     {
         return await identityService.RegisterAsync(command.Email, command.Password, ct);
     }

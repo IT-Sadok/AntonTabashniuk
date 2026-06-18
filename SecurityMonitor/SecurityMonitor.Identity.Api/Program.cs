@@ -17,6 +17,7 @@ builder.Services
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddScoped<IIdentityService,IdentityService>(); 
+builder.Services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
 builder.Services.AddScoped<RegisterHandler>();
 builder.Services.AddScoped<LoginHandler>();
 

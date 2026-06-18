@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SecurityMonitor.Identity.Application.Authentication;
-using SecurityMonitor.Identity.Application.ResultPattern;
+using SecurityMonitor.Identity.Application.Authentication.Login;
+using SecurityMonitor.Identity.Application.Common;
 using SecurityMonitor.Identity.Domain;
 
 namespace SecurityMonitor.Identity.Infrastructure;
@@ -8,38 +9,42 @@ namespace SecurityMonitor.Identity.Infrastructure;
 public sealed class IdentityService : IIdentityService
 {
     private readonly UserManager<ApplicationUser> userManager;
-
-    public IdentityService(UserManager<ApplicationUser> userManager)
+    private readonly IJwtTokenProvider jwtTokenProvider;
+    public IdentityService(
+        UserManager<ApplicationUser> userManager, 
+        IJwtTokenProvider jwtTokenProvider)
     {
         this.userManager = userManager;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public async Task<Result> LoginAsync(string email, string password, CancellationToken ct)
+    public async Task<Result<LoginResponse>> LoginAsync(string email, string password, CancellationToken ct)
     {
-        var user = userManager.FindByEmailAsync(email);
+        var user = await userManager.FindByEmailAsync(email);
 
-        if (user.Result is null)
+        if (user is null)
         {
-            return Result.Failure("User does not exists");
+            return Result<LoginResponse>.Failure("User does not exist");
         }
 
-        var validPassword = await userManager.CheckPasswordAsync(user.Result, password);
+        var validPassword = await userManager.CheckPasswordAsync(user, password);
 
         if (!validPassword)
         {
-            return Result.Failure("User password is incorrect");
+            return Result<LoginResponse>.Failure("User password is incorrect");
         }
 
-        return Result.Success();
+        var token = jwtTokenProvider.GenerateToken(user.Id, user.Email);
+        return Result<LoginResponse>.Success(new LoginResponse(token));
     }
 
-    public async Task<Result> RegisterAsync(string email, string password, CancellationToken ct)
+    public async Task<Result<bool>> RegisterAsync(string email, string password, CancellationToken ct)
     {
         var existingUser = await userManager.FindByEmailAsync(email);
 
         if (existingUser is not null)
         {
-            return Result.Failure("User already exists");
+            return Result<bool>.Failure("User already exists");
         }
 
         var user = new ApplicationUser
@@ -52,9 +57,9 @@ public sealed class IdentityService : IIdentityService
 
         if (!result.Succeeded)
         {
-            return Result.Failure(string.Join(", ", result.Errors.Select(x => x.Description)));
+            return Result<bool>.Failure(string.Join(", ", result.Errors.Select(x => x.Description)));
         }
 
-        return Result.Success();
+        return Result<bool>.Success(true);
     }
 }

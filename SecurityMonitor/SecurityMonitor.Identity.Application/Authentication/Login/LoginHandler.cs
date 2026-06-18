@@ -1,4 +1,4 @@
-﻿using SecurityMonitor.Identity.Application.ResultPattern;
+﻿using SecurityMonitor.Identity.Application.Common;
 
 namespace SecurityMonitor.Identity.Application.Authentication.Login;
 
@@ -10,7 +10,7 @@ public sealed class LoginHandler
         this.identityService = identityService;
     }
 
-    public async Task<Result> Handle(LoginCommand command, CancellationToken ct)
+    public async Task<Result<LoginResponse>> Handle(LoginCommand command, CancellationToken ct)
     {
         return await identityService.LoginAsync(command.Email, command.Password, ct);
     }
