@@ -7,24 +7,31 @@ public static class AuthEndpoints
 {
     public static IEndpointRouteBuilder MapAuthEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost(
-            "/auth/register",
-            async (RegisterCommand command, RegisterHandler handler, CancellationToken cancellationToken) =>
-            {
-                var result = await handler.Handle(command,cancellationToken);
+        var group = endpoints.MapGroup(AuthRoutes.Base);
 
-                return Results.Ok(result);
-            });
+        group.MapPost(AuthRoutes.Register, Register());
 
-        endpoints.MapPost(
-            "/auth/login",
-            async (LoginCommand command,LoginHandler handler,CancellationToken cancellationToken) =>
-            {
-                var result = await handler.Handle(command, cancellationToken);
-
-                return Results.Ok(result);
-            });
+        group.MapPost(AuthRoutes.Login, Login());
 
         return endpoints;
+    }
+    private static Func<RegisterCommand, RegisterHandler, CancellationToken, Task<IResult>> Register()
+    {
+        return async (RegisterCommand command, RegisterHandler handler, CancellationToken cancellationToken) =>
+        {
+            var result = await handler.Handle(command, cancellationToken);
+
+            return Results.Ok(result);
+        };
+    }
+
+    private static Func<LoginCommand, LoginHandler, CancellationToken, Task<IResult>> Login()
+    {
+        return async (LoginCommand command, LoginHandler handler, CancellationToken cancellationToken) =>
+        {
+            var result = await handler.Handle(command, cancellationToken);
+
+            return Results.Ok(result);
+        };
     }
 }
