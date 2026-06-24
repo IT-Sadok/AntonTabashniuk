@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/SecurityMonitor/">
+    <Project Path="SecurityMonitor.Api/SecurityMonitor.Api.csproj" Id="95e36a24-ee7a-4051-80d9-9e6bbfac74c2" />
+    <Project Path="SecurityMonitor.Application/SecurityMonitor.Application.csproj" Id="d0d4d048-8ede-472d-a580-8db3ec2baecc" />
+    <Project Path="SecurityMonitor.Domain/SecurityMonitor.Domain.csproj" Id="99fbd953-7504-4c15-93c7-8470de434ea6" />
+    <Project Path="SecurityMonitor.Infrastructure/SecurityMonitor.Infrastructure.csproj" Id="de5fe2c1-e589-4d4d-ae8b-89dcd322ed0d" />
+  </Folder>
   <Folder Name="/SecurityMonitorIdentity/">
     <File Path="docker-compose.yml" />
     <Project Path="SecurityMonitor.Identity.Api/SecurityMonitor.Identity.Api.csproj" Id="71fef4ba-f12d-45de-b937-95f0f6606b3a" />
