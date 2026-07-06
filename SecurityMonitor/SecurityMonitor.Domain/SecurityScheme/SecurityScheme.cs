@@ -18,22 +18,4 @@ public class SecurityScheme
         Name = name;
         Description = description;
     }
-    public void SetId(int id)
-    {
-        Id = id;
-    }
-    public void SetDevice(Device device)
-    {
-        Device = device;
-    }
-
-    public void ChangeDescription(string? description)
-    {
-        Description = description;
-    }
-    public void SetAddress(string? description)
-    {
-        Description = description;
-    }
-
 }
