@@ -17,15 +17,20 @@ public sealed class CreateHandler
         CreateCommand command, 
         CancellationToken cancellationToken)
     {
-        if (await repository.ExistsAsync(command.Name, cancellationToken))
+        if (await repository.ExistsAsync(command.id, cancellationToken))
         {
             return Result<CreateResponse>.Failure("Security scheme already exists.");
         }
 
-        var securityScheme = new SecurityScheme(command.Name, command.Description);
+        var securityScheme = new SecurityScheme(command.id, command.Name, command.Description);
 
         var id = await repository.AddAsync(securityScheme, cancellationToken);
-        
-        return Result<CreateResponse>.Success(new CreateResponse(id));
+
+        if (id > 0)
+        {
+            return Result<CreateResponse>.Success(new CreateResponse(id));
+        }
+
+        return Result<CreateResponse>.Failure("Failed to create security scheme.");
     }
 }

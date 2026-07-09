@@ -20,4 +20,8 @@
     <ProjectReference Include="..\SecurityMonitor.Infrastructure\SecurityMonitor.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Endpoints\SecurityScheme\Models\" />
+  </ItemGroup>
+
 </Project>

@@ -18,10 +18,8 @@ public static class SecuritySchemeMapper
     public static SecurityScheme ToDomain(this SecuritySchemeEntity entity)
     {
         return new SecurityScheme(
+            entity.Id,
             entity.Name,
-            entity.Description)
-        {
-            Id = entity.Id
-        };
+            entity.Description);
     }
 }

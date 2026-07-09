@@ -12,9 +12,11 @@ public class SecurityScheme
     public string? Description { get; set; }
     public List<SecuritySchemeMember>? Members { get; set; }
     public SecurityScheme(
+        int id,
         string name,
         string? description)
     {
+        Id = id;
         Name = name;
         Description = description;
     }
