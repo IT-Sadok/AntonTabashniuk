@@ -37,25 +37,18 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
 
     public async Task<bool> UpdateAsync(SecurityScheme securityScheme, CancellationToken cancellationToken)
     {
-        var entity = await _dbContext.SecuritySchemes
+        return await _dbContext.SecuritySchemes
             .Where(x => x.Id == securityScheme.Id)
-            .FirstOrDefaultAsync(cancellationToken);
-        
-        if (entity is not null)
-        {
-            entity.Name = securityScheme.Name;
-            entity.Description = securityScheme.Description;
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            return true;
-        }
-
-        return false;
+            .ExecuteUpdateAsync(ss => ss
+                .SetProperty(e=>e.Name, securityScheme.Name)
+                .SetProperty(e=>e.Description, securityScheme.Description),
+                cancellationToken) > 0;
     }
 
     public async Task<int> AddAsync(SecurityScheme securityScheme, CancellationToken ct)
     {
         var entity = securityScheme.ToEntity();
-        
+
         await _dbContext.SecuritySchemes.AddAsync(entity, ct);
         await _dbContext.SaveChangesAsync(ct);
 

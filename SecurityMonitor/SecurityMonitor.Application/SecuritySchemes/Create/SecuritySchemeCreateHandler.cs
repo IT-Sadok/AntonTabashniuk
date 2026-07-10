@@ -14,7 +14,7 @@ public sealed class SecuritySchemeCreateHandler
     }
 
     public async Task<Result<SecuritySchemeCreateResponse>> Handle(
-        SecuritySchemeCreateCommand command, 
+        SecuritySchemeCreateCommand command,
         CancellationToken cancellationToken)
     {
         if (await repository.ExistsAsync(command.id, cancellationToken))
