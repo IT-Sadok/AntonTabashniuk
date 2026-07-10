@@ -20,27 +20,14 @@ public sealed class SecuritySchemeGetAllHandler
     {
         List<SecurityScheme> securitySchemes = await repository.GetAllAsync(cancellationToken);
 
-        List<SecuritySchemeGetResponse> responceList = new List<SecuritySchemeGetResponse>();
+        var responseList = securitySchemes
+            .Select(x => new SecuritySchemeGetResponse(
+                x.Id,
+                x.Name,
+                x.Description))
+            .ToList();
 
-        if (securitySchemes.Count == 0) 
-        {
-            return Result<SecuritySchemeGetAllResponse>.Failure("Security schemes does not exists.");
-        }
-
-        foreach (var securityScheme in securitySchemes)
-        {
-            if (securityScheme != null)
-            {
-                responceList.Add(
-                    new SecuritySchemeGetResponse(
-                     securityScheme.Id,
-                     securityScheme.Name,
-                     securityScheme.Description
-                     ));
-            }
-        }
-
-        return Result<SecuritySchemeGetAllResponse>.Success(new SecuritySchemeGetAllResponse(responceList));
+        return Result<SecuritySchemeGetAllResponse>.Success(new SecuritySchemeGetAllResponse(responseList));
     }
 }
 

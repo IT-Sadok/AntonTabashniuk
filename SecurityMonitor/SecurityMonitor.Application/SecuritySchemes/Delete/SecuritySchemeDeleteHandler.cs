@@ -20,11 +20,11 @@ public class SecuritySchemeDeleteHandler
             return Result<bool>.Failure("Security scheme does not exists.");
         }
 
-        var result = await repository.DeleteAsync(command.Id, cancellationToken);
+        var isDeleted = await repository.DeleteAsync(command.Id, cancellationToken);
         
-        if (result)
+        if (isDeleted)
         {
-            return Result<bool>.Success(result);
+            return Result<bool>.Success(isDeleted);
         }
 
         return Result<bool>.Failure("There was some problems when deleting security scheme");
