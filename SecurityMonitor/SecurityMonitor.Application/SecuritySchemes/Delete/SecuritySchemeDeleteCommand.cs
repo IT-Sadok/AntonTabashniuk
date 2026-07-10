@@ -1,3 +1,3 @@
 ﻿namespace SecurityMonitor.Application.SecuritySchemes.Delete;
 
-public sealed record DeleteCommand(int Id);
+public sealed record SecuritySchemeDeleteCommand(int Id);

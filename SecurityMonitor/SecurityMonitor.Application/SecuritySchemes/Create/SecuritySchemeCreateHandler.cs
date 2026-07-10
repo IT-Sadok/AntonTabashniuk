@@ -3,23 +3,23 @@ using SecurityMonitor.Domain.Administrative;
 
 namespace SecurityMonitor.Application.SecuritySchemes.Create;
 
-public sealed class CreateHandler
+public sealed class SecuritySchemeCreateHandler
 {
     private readonly ISecuritySchemeRepository repository;
 
-    public CreateHandler(
+    public SecuritySchemeCreateHandler(
         ISecuritySchemeRepository repository)
     {
         this.repository = repository;
     }
 
-    public async Task<Result<CreateResponse>> Handle(
-        CreateCommand command, 
+    public async Task<Result<SecuritySchemeCreateResponse>> Handle(
+        SecuritySchemeCreateCommand command, 
         CancellationToken cancellationToken)
     {
         if (await repository.ExistsAsync(command.id, cancellationToken))
         {
-            return Result<CreateResponse>.Failure("Security scheme already exists.");
+            return Result<SecuritySchemeCreateResponse>.Failure("Security scheme already exists.");
         }
 
         var securityScheme = new SecurityScheme(command.id, command.Name, command.Description);
@@ -28,9 +28,9 @@ public sealed class CreateHandler
 
         if (id > 0)
         {
-            return Result<CreateResponse>.Success(new CreateResponse(id));
+            return Result<SecuritySchemeCreateResponse>.Success(new SecuritySchemeCreateResponse(id));
         }
 
-        return Result<CreateResponse>.Failure("Failed to create security scheme.");
+        return Result<SecuritySchemeCreateResponse>.Failure("Failed to create security scheme.");
     }
 }

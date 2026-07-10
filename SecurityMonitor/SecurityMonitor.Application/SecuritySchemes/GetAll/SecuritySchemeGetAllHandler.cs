@@ -5,26 +5,26 @@ using SecurityMonitor.Domain.Administrative;
 namespace SecurityMonitor.Application.SecuritySchemes.GetAll;
 
 
-public sealed class GetAllHandler
+public sealed class SecuritySchemeGetAllHandler
 {
     private readonly ISecuritySchemeRepository repository;
 
-    public GetAllHandler(ISecuritySchemeRepository repository)
+    public SecuritySchemeGetAllHandler(ISecuritySchemeRepository repository)
     {
         this.repository = repository;
     }
 
-    public async Task<Result<GetAllResponse>> Handle(
-        GetAllQuery command,
+    public async Task<Result<SecuritySchemeGetAllResponse>> Handle(
+        SecuritySchemeGetAllQuery command,
         CancellationToken cancellationToken)
     {
         List<SecurityScheme> securitySchemes = await repository.GetAllAsync(cancellationToken);
 
-        List<GetResponse> responceList = new List<GetResponse>();
+        List<SecuritySchemeGetResponse> responceList = new List<SecuritySchemeGetResponse>();
 
         if (securitySchemes.Count == 0) 
         {
-            return Result<GetAllResponse>.Failure("Security schemes does not exists.");
+            return Result<SecuritySchemeGetAllResponse>.Failure("Security schemes does not exists.");
         }
 
         foreach (var securityScheme in securitySchemes)
@@ -32,7 +32,7 @@ public sealed class GetAllHandler
             if (securityScheme != null)
             {
                 responceList.Add(
-                    new GetResponse(
+                    new SecuritySchemeGetResponse(
                      securityScheme.Id,
                      securityScheme.Name,
                      securityScheme.Description
@@ -40,7 +40,7 @@ public sealed class GetAllHandler
             }
         }
 
-        return Result<GetAllResponse>.Success(new GetAllResponse(responceList));
+        return Result<SecuritySchemeGetAllResponse>.Success(new SecuritySchemeGetAllResponse(responceList));
     }
 }
 

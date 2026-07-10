@@ -1,4 +1,4 @@
-﻿namespace SecurityMonitor.Api.Endpoints.SecuritySchemes;
+﻿namespace SecurityMonitor.Api.Endpoints.SecurityScheme;
 
 public static class SecuritySchemeRoutes
 {

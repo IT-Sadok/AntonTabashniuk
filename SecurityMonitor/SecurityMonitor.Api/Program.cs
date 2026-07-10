@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SecurityMonitor.Api.Endpoints.Auth;
+using SecurityMonitor.Api.Endpoints.SecurityScheme;
 using SecurityMonitor.Application.SecuritySchemes;
 using SecurityMonitor.Application.SecuritySchemes.Create;
 using SecurityMonitor.Infrastructure.Persistence;
@@ -12,7 +12,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
            .UseSnakeCaseNamingConvention()
 );
 
-builder.Services.AddScoped<CreateHandler>();
+builder.Services.AddScoped<SecuritySchemeCreateHandler>();
 builder.Services.AddScoped<ISecuritySchemeRepository, SecuritySchemeRepository>();
 
 builder.Services.AddAuthentication();

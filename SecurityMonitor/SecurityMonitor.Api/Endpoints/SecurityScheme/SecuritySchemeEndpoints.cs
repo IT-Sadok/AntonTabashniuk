@@ -5,7 +5,7 @@ using SecurityMonitor.Application.SecuritySchemes.Get;
 using SecurityMonitor.Application.SecuritySchemes.GetAll;
 using SecurityMonitor.Application.SecuritySchemes.Delete;
 
-namespace SecurityMonitor.Api.Endpoints.SecuritySchemes;
+namespace SecurityMonitor.Api.Endpoints.SecurityScheme;
 
 public static class SecuritySchemeEndpoints
 {
@@ -25,7 +25,7 @@ public static class SecuritySchemeEndpoints
 
         return endpoints;
     }
-    private static async Task<IResult> Create(CreateCommand command, CreateHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Create(SecuritySchemeCreateCommand command, SecuritySchemeCreateHandler handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(command, cancellationToken);
 
@@ -39,7 +39,7 @@ public static class SecuritySchemeEndpoints
             result.Value);
     }
 
-    private static async Task<IResult> Update(UpdateCommand command, UpdateHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Update(SecuritySchemeUpdateCommand command, SecuritySchemeUpdateHandler handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(command, cancellationToken);
 
@@ -51,7 +51,7 @@ public static class SecuritySchemeEndpoints
         return Results.Ok(result.Value);
     }
 
-    private static async Task<IResult> Get(GetQuery command, GetHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Get(SecuritySchemeGetQuery command, SecuritySchemeGetHandler handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(command, cancellationToken);
 
@@ -63,7 +63,7 @@ public static class SecuritySchemeEndpoints
         return Results.Ok(result.Value);
     }
 
-    private static async Task<IResult> GetAll(GetAllQuery command, GetAllHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> GetAll(SecuritySchemeGetAllQuery command, SecuritySchemeGetAllHandler handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(command, cancellationToken);
 
@@ -75,7 +75,7 @@ public static class SecuritySchemeEndpoints
         return Results.Ok(result.Value);
     }
 
-    private static async Task<IResult> Delete(DeleteCommand command, DeleteHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Delete(SecuritySchemeDeleteCommand command, SecuritySchemeDeleteHandler handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(command, cancellationToken);
 

@@ -1,6 +1,6 @@
 ﻿namespace SecurityMonitor.Application.SecuritySchemes.Create;
 
-public sealed record CreateCommand(
+public sealed record SecuritySchemeCreateCommand(
     int id,
     string Name,
     string? Description);

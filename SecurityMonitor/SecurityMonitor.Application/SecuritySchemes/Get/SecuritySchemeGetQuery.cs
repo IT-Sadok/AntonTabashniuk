@@ -1,3 +1,3 @@
 ﻿namespace SecurityMonitor.Application.SecuritySchemes.Get;
 
-public sealed record GetQuery(int Id);
+public sealed record SecuritySchemeGetQuery(int Id);

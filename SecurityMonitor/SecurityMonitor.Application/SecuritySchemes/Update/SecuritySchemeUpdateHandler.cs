@@ -3,22 +3,22 @@ using SecurityMonitor.Domain.Administrative;
 
 namespace SecurityMonitor.Application.SecuritySchemes.Update;
 
-public sealed class UpdateHandler
+public sealed class SecuritySchemeUpdateHandler
 {
     private readonly ISecuritySchemeRepository repository;
 
-    public UpdateHandler(ISecuritySchemeRepository repository)
+    public SecuritySchemeUpdateHandler(ISecuritySchemeRepository repository)
     {
         this.repository = repository;
     }
 
-    public async Task<Result<UpdateResponse>> Handle(
-        UpdateCommand command,
+    public async Task<Result<SecuritySchemeUpdateResponse>> Handle(
+        SecuritySchemeUpdateCommand command,
         CancellationToken cancellationToken)
     {
         if (!await repository.ExistsAsync(command.Id, cancellationToken))
         {
-            return Result<UpdateResponse>.Failure("Security scheme does not exists.");
+            return Result<SecuritySchemeUpdateResponse>.Failure("Security scheme does not exists.");
         }
         var securityScheme = new SecurityScheme(command.Id, command.Name, command.Description);
 
@@ -26,14 +26,14 @@ public sealed class UpdateHandler
 
         if (isUpdated)
         {
-            return Result<UpdateResponse>.Success(
-                new UpdateResponse(
+            return Result<SecuritySchemeUpdateResponse>.Success(
+                new SecuritySchemeUpdateResponse(
                     securityScheme.Id,
                     securityScheme.Name,
                     securityScheme.Description
                     ));
         }
 
-        return Result<UpdateResponse>.Failure("Failed to update security scheme.");
+        return Result<SecuritySchemeUpdateResponse>.Failure("Failed to update security scheme.");
     }
 }

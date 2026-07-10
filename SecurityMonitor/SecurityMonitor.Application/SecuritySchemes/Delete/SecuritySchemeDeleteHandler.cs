@@ -2,17 +2,17 @@
 
 namespace SecurityMonitor.Application.SecuritySchemes.Delete;
 
-public class DeleteHandler
+public class SecuritySchemeDeleteHandler
 {
     private readonly ISecuritySchemeRepository repository;
 
-    public DeleteHandler(ISecuritySchemeRepository repository)
+    public SecuritySchemeDeleteHandler(ISecuritySchemeRepository repository)
     {
         this.repository = repository;
     }
 
     public async Task<Result<bool>> Handle(
-        DeleteCommand command,
+        SecuritySchemeDeleteCommand command,
         CancellationToken cancellationToken)
     {
         if (!await repository.ExistsAsync(command.Id, cancellationToken))
