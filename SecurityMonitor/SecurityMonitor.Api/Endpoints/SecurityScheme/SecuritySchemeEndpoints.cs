@@ -4,6 +4,7 @@ using SecurityMonitor.Application.SecuritySchemes.Update;
 using SecurityMonitor.Application.SecuritySchemes.Get;
 using SecurityMonitor.Application.SecuritySchemes.GetAll;
 using SecurityMonitor.Application.SecuritySchemes.Delete;
+using SecurityMonitor.Api.Endpoints.SecurityScheme.Requests;
 
 namespace SecurityMonitor.Api.Endpoints.SecurityScheme;
 
@@ -39,8 +40,10 @@ public static class SecuritySchemeEndpoints
             result.Value);
     }
 
-    private static async Task<IResult> Update(SecuritySchemeUpdateCommand command, SecuritySchemeUpdateHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Update(int id, SecuritySchemeUpdateRequest request, SecuritySchemeUpdateHandler handler, CancellationToken cancellationToken)
     {
+        var command = new SecuritySchemeUpdateCommand(id, request.Name, request.Description);
+
         var result = await handler.Handle(command, cancellationToken);
 
         if (!result.IsSuccess)
@@ -51,8 +54,10 @@ public static class SecuritySchemeEndpoints
         return Results.Ok(result.Value);
     }
 
-    private static async Task<IResult> Get(SecuritySchemeGetQuery command, SecuritySchemeGetHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Get(int id, SecuritySchemeGetHandler handler, CancellationToken cancellationToken)
     {
+        var command = new SecuritySchemeGetQuery(id);
+
         var result = await handler.Handle(command, cancellationToken);
 
         if (!result.IsSuccess)
@@ -63,9 +68,9 @@ public static class SecuritySchemeEndpoints
         return Results.Ok(result.Value);
     }
 
-    private static async Task<IResult> GetAll(SecuritySchemeGetAllQuery command, SecuritySchemeGetAllHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> GetAll(SecuritySchemeGetAllHandler handler, CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(command, cancellationToken);
+        var result = await handler.Handle(cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -75,8 +80,9 @@ public static class SecuritySchemeEndpoints
         return Results.Ok(result.Value);
     }
 
-    private static async Task<IResult> Delete(SecuritySchemeDeleteCommand command, SecuritySchemeDeleteHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Delete(int id, SecuritySchemeDeleteHandler handler, CancellationToken cancellationToken)
     {
+        var command = new SecuritySchemeDeleteCommand(id);
         var result = await handler.Handle(command, cancellationToken);
 
         if (!result.IsSuccess)
