@@ -15,11 +15,6 @@ public class SecuritySchemeDeleteHandler
         SecuritySchemeDeleteCommand command,
         CancellationToken cancellationToken)
     {
-        if (!await repository.ExistsAsync(command.Id, cancellationToken))
-        {
-            return Result<bool>.Failure("Security scheme does not exists.");
-        }
-
         var isDeleted = await repository.DeleteAsync(command.Id, cancellationToken);
         
         if (isDeleted)

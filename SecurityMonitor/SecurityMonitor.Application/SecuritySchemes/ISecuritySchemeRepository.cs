@@ -11,5 +11,6 @@ public interface ISecuritySchemeRepository
     Task<bool> UpdateAsync(SecurityScheme securityScheme, CancellationToken cancellationToken);
     Task<SecurityScheme?> GetAsync(int securitySchemeId, CancellationToken cancellationToken);
     Task<List<SecurityScheme>> GetAllAsync(CancellationToken cancellationToken);
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 }
 

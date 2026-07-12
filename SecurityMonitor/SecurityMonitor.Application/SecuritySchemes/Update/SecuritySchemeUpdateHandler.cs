@@ -1,5 +1,5 @@
 ﻿using SecurityMonitor.Application.Common;
-using SecurityMonitor.Domain.Administrative;
+using SecurityMonitor.Application.SecuritySchemes.Mappers;
 
 namespace SecurityMonitor.Application.SecuritySchemes.Update;
 
@@ -16,22 +16,16 @@ public sealed class SecuritySchemeUpdateHandler
         SecuritySchemeUpdateCommand command,
         CancellationToken cancellationToken)
     {
-        if (!await repository.ExistsAsync(command.Id, cancellationToken))
+        var securityScheme = await repository.GetAsync(command.Id, cancellationToken);
+                        
+        if (securityScheme is not null)
         {
-            return Result<SecuritySchemeUpdateResponse>.Failure("Security scheme does not exists.");
-        }
-        var securityScheme = new SecurityScheme(command.Id, command.Name, command.Description);
-
-        var isUpdated = await repository.UpdateAsync(securityScheme, cancellationToken);
-
-        if (isUpdated)
-        {
-            return Result<SecuritySchemeUpdateResponse>.Success(
-                new SecuritySchemeUpdateResponse(
-                    securityScheme.Id,
-                    securityScheme.Name,
-                    securityScheme.Description
-                    ));
+            securityScheme.Update(command.Name, command.Description);
+            
+            if (await repository.UpdateAsync(securityScheme, cancellationToken))
+            {
+                return Result<SecuritySchemeUpdateResponse>.Success(securityScheme.ToUpdateResponse());
+            }
         }
 
         return Result<SecuritySchemeUpdateResponse>.Failure("Failed to update security scheme.");

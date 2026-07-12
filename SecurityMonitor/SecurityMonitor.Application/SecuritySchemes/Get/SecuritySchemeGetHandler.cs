@@ -1,4 +1,5 @@
 ﻿using SecurityMonitor.Application.Common;
+using SecurityMonitor.Application.SecuritySchemes.Mappers;
 
 namespace SecurityMonitor.Application.SecuritySchemes.Get;
 
@@ -15,21 +16,11 @@ public sealed class SecuritySchemeGetHandler
         SecuritySchemeGetQuery command,
         CancellationToken cancellationToken)
     {
-        if (!await repository.ExistsAsync(command.Id, cancellationToken))
-        {
-            return Result<SecuritySchemeGetResponse>.Failure("Security scheme does not exists.");
-        }
-
         var securityScheme = await repository.GetAsync(command.Id, cancellationToken);
 
         if (securityScheme is not null)
         {
-            return Result<SecuritySchemeGetResponse>.Success(
-                new SecuritySchemeGetResponse(
-                    securityScheme.Id, 
-                    securityScheme.Name, 
-                    securityScheme.Description
-                    ));
+            return Result<SecuritySchemeGetResponse>.Success(securityScheme.ToGetResponse());
         }
 
         return Result<SecuritySchemeGetResponse>.Failure("Security scheme does not exists.");

@@ -1,5 +1,5 @@
 ﻿using SecurityMonitor.Application.Common;
-using SecurityMonitor.Domain.Administrative;
+using SecurityMonitor.Application.SecuritySchemes.Mappers;
 
 namespace SecurityMonitor.Application.SecuritySchemes.Create;
 
@@ -17,18 +17,16 @@ public sealed class SecuritySchemeCreateHandler
         SecuritySchemeCreateCommand command,
         CancellationToken cancellationToken)
     {
-        if (await repository.ExistsAsync(command.id, cancellationToken))
+        if (await repository.ExistsAsync(command.Name, cancellationToken))
         {
             return Result<SecuritySchemeCreateResponse>.Failure("Security scheme already exists.");
         }
 
-        var securityScheme = new SecurityScheme(command.id, command.Name, command.Description);
+        var entityId = await repository.AddAsync(command.ToSecurityScheme(), cancellationToken);
 
-        var id = await repository.AddAsync(securityScheme, cancellationToken);
-
-        if (id > 0)
+        if (entityId > 0)
         {
-            return Result<SecuritySchemeCreateResponse>.Success(new SecuritySchemeCreateResponse(id));
+            return Result<SecuritySchemeCreateResponse>.Success(new SecuritySchemeCreateResponse(entityId));
         }
 
         return Result<SecuritySchemeCreateResponse>.Failure("Failed to create security scheme.");

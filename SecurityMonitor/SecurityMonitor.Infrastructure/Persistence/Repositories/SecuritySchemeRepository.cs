@@ -48,12 +48,12 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
     public async Task<int> AddAsync(SecurityScheme securityScheme, CancellationToken ct)
     {
         var entity = securityScheme.ToEntity();
-
+        
         await _dbContext.SecuritySchemes.AddAsync(entity, ct);
-        await _dbContext.SaveChangesAsync(ct);
+        await SaveChangesAsync(ct);
 
         return entity.Id;
-    }
+    } 
     public async Task<bool> ExistsAsync(string name, CancellationToken ct)
     {
         return await _dbContext.SecuritySchemes.AnyAsync(x => x.Name == name, ct);
@@ -62,5 +62,10 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
     public async Task<bool> ExistsAsync(int id, CancellationToken ct)
     {
         return await _dbContext.SecuritySchemes.AnyAsync(x => x.Id == id, ct);
+    }
+
+    public Task SaveChangesAsync(CancellationToken ct)
+    {
+        return _dbContext.SaveChangesAsync(ct);
     }
 }

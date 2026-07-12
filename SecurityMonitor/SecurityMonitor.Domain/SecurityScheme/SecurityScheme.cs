@@ -20,4 +20,9 @@ public class SecurityScheme
         Name = name;
         Description = description;
     }
+    public void Update(string name, string? description)
+    {
+        Name = name;
+        Description = description;
+    }
 }
