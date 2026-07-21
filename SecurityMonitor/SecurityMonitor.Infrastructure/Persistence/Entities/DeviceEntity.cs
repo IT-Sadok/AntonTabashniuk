@@ -1,0 +1,19 @@
+﻿using SecurityMonitor.Domain.Devices.Enums;
+
+namespace SecurityMonitor.Infrastructure.Persistence.Entities;
+
+public class DeviceEntity
+{
+    public int Id { get; set; }
+    
+    public int SecuritySchemeId { get; set; }
+    public SecuritySchemeEntity SecurityScheme { get; set; } = null!;
+    
+    public required string SerialNumber { get; set; }
+    
+    public DeviceType DeviceType { get; set; }
+    public DeviceState DeviceState { get; set; }
+
+    public List<GroupEntity> Groups { get; set; } = [];
+    public List<ZoneEntity> Zones { get; set; } = [];
+}

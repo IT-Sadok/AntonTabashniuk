@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Folder Include="Devices\Groups\Zones\" />
+    <Folder Include="Devices\Create\" />
     <Folder Include="Users\" />
   </ItemGroup>
 
