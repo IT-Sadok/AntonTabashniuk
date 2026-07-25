@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using SecurityMonitor.Api.Endpoints.Device;
 using SecurityMonitor.Api.Endpoints.SecurityScheme;
+using SecurityMonitor.Application.Devices;
+using SecurityMonitor.Application.Devices.Update;
 using SecurityMonitor.Application.SecuritySchemes;
 using SecurityMonitor.Application.SecuritySchemes.Create;
 using SecurityMonitor.Application.SecuritySchemes.Delete;
@@ -21,7 +24,9 @@ builder.Services.AddScoped<SecuritySchemeUpdateHandler>();
 builder.Services.AddScoped<SecuritySchemeGetHandler>();
 builder.Services.AddScoped<SecuritySchemeGetAllHandler>();
 builder.Services.AddScoped<SecuritySchemeDeleteHandler>();
+builder.Services.AddScoped<DeviceUpdateHandler>();
 builder.Services.AddScoped<ISecuritySchemeRepository, SecuritySchemeRepository>();
+builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
@@ -30,6 +35,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.MapSecuritySchemeEndpoints();
+app.MapDeviceEndpoints();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -9,7 +9,7 @@ public class DeviceEntity
     public int SecuritySchemeId { get; set; }
     public SecuritySchemeEntity SecurityScheme { get; set; } = null!;
     
-    public required string SerialNumber { get; set; }
+    public string SerialNumber { get; set; } = string.Empty;
     
     public DeviceType DeviceType { get; set; }
     public DeviceState DeviceState { get; set; }

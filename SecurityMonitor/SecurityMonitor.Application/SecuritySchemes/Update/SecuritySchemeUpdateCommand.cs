@@ -1,6 +1,10 @@
-﻿namespace SecurityMonitor.Application.SecuritySchemes.Update;
+﻿using SecurityMonitor.Application.Devices.Update;
+
+namespace SecurityMonitor.Application.SecuritySchemes.Update;
 
 public sealed record SecuritySchemeUpdateCommand(
     int Id,
     string Name,
-    string? Description);
+    string? Description,
+    DeviceUpdateCommand Device
+    );

@@ -11,7 +11,8 @@ public static class SecuritySchemeMapper
         {
             Id = model.Id,
             Name = model.Name,
-            Description = model.Description
+            Description = model.Description,
+            Device = model.Device.ToEntity()
         };
     }
 
@@ -20,6 +21,8 @@ public static class SecuritySchemeMapper
         return new SecurityScheme(
             entity.Id,
             entity.Name,
-            entity.Description);
+            entity.Description,
+            entity.Device.ToDomain()
+            );
     }
 }

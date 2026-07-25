@@ -1,47 +1,38 @@
-﻿using SecurityMonitor.Application.Devices;
+﻿using Microsoft.EntityFrameworkCore;
+using SecurityMonitor.Application.Devices;
 using SecurityMonitor.Domain.Devices;
+using SecurityMonitor.Infrastructure.Persistence.Mappers;
+using System.Xml.Linq;
 
 namespace SecurityMonitor.Infrastructure.Persistence.Repositories;
 
-internal class DeviceRepository : IDeviceRepository
+public class DeviceRepository : IDeviceRepository
 {
-    public Task<int> AddAsync(Device device, CancellationToken cancellationToken)
+    private readonly ApplicationDbContext _dbContext;
+    public DeviceRepository(ApplicationDbContext dbContext)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
     }
-
-    public Task<bool> DeleteAsync(int securitySchemeId, CancellationToken cancellationToken)
+                   
+    public async Task<Device?> GetAsync(int deviceId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Devices
+            .Where(x => x.Id == deviceId)
+            .Select(x => x.ToDomain())
+            .FirstOrDefaultAsync(cancellationToken);
     }
-
-    public Task<bool> ExistsAsync(string name, CancellationToken cancellationToken)
+    public async Task<bool> ExistAsync(string serialNumber, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Devices.AnyAsync(x => x.SerialNumber == serialNumber, cancellationToken);
     }
-
-    public Task<bool> ExistsAsync(int id, CancellationToken cancellationToken)
+    public async Task<bool> UpdateAsync(Device device, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<Device>> GetAllAsync(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Device?> GetAsync(int securitySchemeId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task SaveChangesAsync(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> UpdateAsync(Device Device, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
+        return await _dbContext.Devices
+            .Where(x => x.Id == device.Id)
+            .ExecuteUpdateAsync(d => d
+                .SetProperty(e => e.SerialNumber, device.SerialNumber)
+                .SetProperty(e => e.DeviceType, device.DeviceType)
+                .SetProperty(e => e.DeviceState, device.DeviceState),
+                cancellationToken) > 0;
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Application.SecuritySchemes;
 using SecurityMonitor.Domain.Administrative;
+using SecurityMonitor.Domain.Devices;
 using SecurityMonitor.Infrastructure.Persistence.Mappers;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SecurityMonitor.Infrastructure.Persistence.Repositories;
 
@@ -16,6 +18,7 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
     public async Task<List<SecurityScheme>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.SecuritySchemes
+            .Include(p => p.Device)
             .Select(x => x.ToDomain())
             .ToListAsync(cancellationToken);
     }
@@ -23,6 +26,7 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
     public async Task<SecurityScheme?> GetAsync(int securitySchemeId, CancellationToken cancellationToken)
     {
         return await _dbContext.SecuritySchemes
+            .Include(p => p.Device)
             .Where(x => x.Id == securitySchemeId)
             .Select(x => x.ToDomain())
             .FirstOrDefaultAsync(cancellationToken);
@@ -37,12 +41,24 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
 
     public async Task<bool> UpdateAsync(SecurityScheme securityScheme, CancellationToken cancellationToken)
     {
-        return await _dbContext.SecuritySchemes
-            .Where(x => x.Id == securityScheme.Id)
-            .ExecuteUpdateAsync(ss => ss
-                .SetProperty(e=>e.Name, securityScheme.Name)
-                .SetProperty(e=>e.Description, securityScheme.Description),
-                cancellationToken) > 0;
+        var securitySchemeEntity = await _dbContext.SecuritySchemes
+            .Include(p => p.Device)
+            .FirstOrDefaultAsync(x => x.Id == securityScheme.Id, cancellationToken);
+
+        if (securitySchemeEntity is null) 
+            return false;
+        
+        securitySchemeEntity.Name = securityScheme.Name;
+        securitySchemeEntity.Description = securityScheme.Description;
+
+        if (securitySchemeEntity.Device is null)
+            return false;
+
+        securitySchemeEntity.Device.SerialNumber = securityScheme.Device.SerialNumber;
+        securitySchemeEntity.Device.DeviceType = securityScheme.Device.DeviceType;
+        securitySchemeEntity.Device.DeviceState = securityScheme.Device.DeviceState;
+
+        return true;
     }
 
     public async Task<int> AddAsync(SecurityScheme securityScheme, CancellationToken ct)
