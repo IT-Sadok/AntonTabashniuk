@@ -17,6 +17,9 @@ public sealed class DeviceConfiguration : IEntityTypeConfiguration<DeviceEntity>
             .HasMaxLength(128)
             .IsRequired();
 
+        builder.HasIndex(x => x.SerialNumber)
+            .IsUnique();
+        
         builder.Property(x => x.DeviceType)
             .HasColumnName("device_type");
 
