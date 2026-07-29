@@ -66,9 +66,9 @@ public static class SecuritySchemeEndpoints
         return Results.Ok(result.Value);
     }
 
-    private static async Task<IResult> GetAll(SecuritySchemeGetAllHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> GetAll([AsParameters] SecuritySchemeGetAllQuery query, SecuritySchemeGetAllHandler handler, CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -76,7 +76,7 @@ public static class SecuritySchemeEndpoints
         }
 
         return Results.Ok(result.Value);
-    }    
+    }
 
     private static async Task<IResult> Delete(int id, SecuritySchemeDeleteHandler handler, CancellationToken cancellationToken)
     {

@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Application.SecuritySchemes;
 using SecurityMonitor.Domain.Administrative;
-using SecurityMonitor.Domain.Devices;
 using SecurityMonitor.Infrastructure.Persistence.Mappers;
-using System.Reflection.Metadata.Ecma335;
 
 namespace SecurityMonitor.Infrastructure.Persistence.Repositories;
 
@@ -14,11 +12,17 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
     {
         _dbContext = dbContext;
     }
-
-    public async Task<List<SecurityScheme>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<int> GetTotalCountAsync(CancellationToken cancellationToken) 
+    {
+        return await _dbContext.SecuritySchemes.CountAsync(cancellationToken);
+    }
+    public async Task<List<SecurityScheme>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken)
     {
         return await _dbContext.SecuritySchemes
-            .Include(p => p.Device)
+            .Include(x => x.Device)
+            .OrderBy(x => x.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .Select(x => x.ToDomain())
             .ToListAsync(cancellationToken);
     }
