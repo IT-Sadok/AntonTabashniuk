@@ -2,7 +2,5 @@
 
 public class DeviceRoutes
 {
-    public const string Base = "/devices";
-
-    public const string Update = "/update";
+    public const string Update = "/devices/update";
 }

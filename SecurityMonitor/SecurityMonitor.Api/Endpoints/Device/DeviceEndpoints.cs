@@ -8,9 +8,7 @@ public static class DeviceEndpoints
 {
     public static IEndpointRouteBuilder MapDeviceEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var group = endpoints.MapGroup(DeviceRoutes.Base);
-
-        group.MapPost(DeviceRoutes.Update, Update);
+        endpoints.MapPut(DeviceRoutes.Update, Update);
 
         return endpoints;
     }
@@ -19,11 +17,8 @@ public static class DeviceEndpoints
     {
         var result = await handler.Handle(request.ToCommand(), cancellationToken);
 
-        if (result.IsSuccess)
-        {
-            return Results.Ok(result.Value);
-        }
-
-        return Results.BadRequest(result.Error);
+        return result.IsSuccess is true 
+            ? Results.Ok(result.Value) 
+            : Results.BadRequest(result.Error);
     }
 }
