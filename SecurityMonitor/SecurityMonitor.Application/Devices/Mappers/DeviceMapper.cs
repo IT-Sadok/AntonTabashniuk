@@ -1,4 +1,5 @@
-﻿using SecurityMonitor.Application.Devices.Update;
+﻿using SecurityMonitor.Application.Devices.Groups.Zones.Mappers;
+using SecurityMonitor.Application.Devices.Update;
 using SecurityMonitor.Domain.Devices;
 
 namespace SecurityMonitor.Application.Devices.Mappers;
@@ -11,7 +12,8 @@ public static class DeviceMapper
             response.DeviceId,
             response.SerialNumber,
             response.DeviceType,
-            response.DeviceState
+            response.DeviceState,
+            response.Zones.ToDomain()
         );
     }
 
@@ -21,7 +23,8 @@ public static class DeviceMapper
             response.Id,
             response.SerialNumber,
             response.DeviceType,
-            response.DeviceState
+            response.DeviceState,
+            response.Zones.ToResponce()
         );
     }
 }

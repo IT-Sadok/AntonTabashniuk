@@ -20,13 +20,15 @@ public class Device
         int id,
         string serialNumber,
         DeviceType deviceType,
-        DeviceState deviceState
+        DeviceState deviceState,
+        List<Zone> zones
         )
     {
         Id = id;
         SerialNumber = serialNumber;
         DeviceType = deviceType;
         DeviceState = deviceState;
+        Zones = zones;
     }
 
     public void Update(Device device)
@@ -34,5 +36,11 @@ public class Device
         SerialNumber = device.SerialNumber;
         DeviceType = device.DeviceType;
         DeviceState = device.DeviceState;
+        UpdateZones(device.Zones);
+    }
+    private void UpdateZones(List<Zone> zones)
+    {
+        foreach (Zone zone in zones) 
+            zone.Update(zone);
     }
 }

@@ -24,11 +24,12 @@ public class DeviceUpdateHandler
             {
                 return Result<bool>.Failure($"Device with serial number {command.SerialNumber} already exist");
             }
-
+             
             device.Update(command.ToDomain());
 
             if (await repository.UpdateAsync(device, cancellationToken))
             {
+                await repository.SaveChangesAsync(cancellationToken);
                 return Result<bool>.Success(true);
             }
         }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Application.Devices;
+using SecurityMonitor.Domain.Administrative;
 using SecurityMonitor.Domain.Devices;
 using SecurityMonitor.Infrastructure.Persistence.Mappers;
+using SecurityMonitor.Infrastructure.Persistence.Repositories.Helpers;
 using System.Xml.Linq;
 
 namespace SecurityMonitor.Infrastructure.Persistence.Repositories;
@@ -27,12 +29,15 @@ public class DeviceRepository : IDeviceRepository
     }
     public async Task<bool> UpdateAsync(Device device, CancellationToken cancellationToken)
     {
-        return await _dbContext.Devices
-            .Where(x => x.Id == device.Id)
-            .ExecuteUpdateAsync(d => d
-                .SetProperty(e => e.SerialNumber, device.SerialNumber)
-                .SetProperty(e => e.DeviceType, device.DeviceType)
-                .SetProperty(e => e.DeviceState, device.DeviceState),
-                cancellationToken) > 0;
+        var deviceEntity = await _dbContext.Devices
+            .Include(g => g.Zones)
+            .FirstOrDefaultAsync(x => x.Id == device.Id, cancellationToken);
+
+        return UpdateDeviceHelper.UpdateDevice(device, deviceEntity!);
+    }
+
+    public Task SaveChangesAsync(CancellationToken ct)
+    {
+        return _dbContext.SaveChangesAsync(ct);
     }
 }

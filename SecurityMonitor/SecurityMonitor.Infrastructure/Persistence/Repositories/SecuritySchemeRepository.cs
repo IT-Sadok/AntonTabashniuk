@@ -2,6 +2,7 @@
 using SecurityMonitor.Application.SecuritySchemes;
 using SecurityMonitor.Domain.Administrative;
 using SecurityMonitor.Infrastructure.Persistence.Mappers;
+using SecurityMonitor.Infrastructure.Persistence.Repositories.Helpers;
 
 namespace SecurityMonitor.Infrastructure.Persistence.Repositories;
 
@@ -47,22 +48,16 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
     {
         var securitySchemeEntity = await _dbContext.SecuritySchemes
             .Include(p => p.Device)
+                .ThenInclude(x => x.Zones)
             .FirstOrDefaultAsync(x => x.Id == securityScheme.Id, cancellationToken);
 
         if (securitySchemeEntity is null) 
             return false;
-        
+
         securitySchemeEntity.Name = securityScheme.Name;
         securitySchemeEntity.Description = securityScheme.Description;
 
-        if (securitySchemeEntity.Device is null)
-            return false;
-
-        securitySchemeEntity.Device.SerialNumber = securityScheme.Device.SerialNumber;
-        securitySchemeEntity.Device.DeviceType = securityScheme.Device.DeviceType;
-        securitySchemeEntity.Device.DeviceState = securityScheme.Device.DeviceState;
-
-        return true;
+        return UpdateDeviceHelper.UpdateDevice(securityScheme.Device, securitySchemeEntity.Device);
     }
 
     public async Task<int> AddAsync(SecurityScheme securityScheme, CancellationToken ct)
