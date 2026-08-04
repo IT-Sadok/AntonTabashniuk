@@ -1,5 +1,8 @@
-﻿namespace SecurityMonitor.Application.SecuritySchemes.Create;
+﻿using SecurityMonitor.Application.Devices.Update;
+
+namespace SecurityMonitor.Application.SecuritySchemes.Create;
 
 public sealed record SecuritySchemeCreateCommand(
     string Name,
-    string? Description);
+    string? Description,
+    DeviceUpdateCommand Device);

@@ -1,15 +1,18 @@
 ﻿using SecurityMonitor.Application.Common;
+using SecurityMonitor.Application.Devices;
 using SecurityMonitor.Application.SecuritySchemes.Mappers;
-
 namespace SecurityMonitor.Application.SecuritySchemes.Update;
 
 public sealed class SecuritySchemeUpdateHandler
 {
     private readonly ISecuritySchemeRepository repository;
-
-    public SecuritySchemeUpdateHandler(ISecuritySchemeRepository repository)
+    private readonly IDeviceRepository deviceRepository;
+    public SecuritySchemeUpdateHandler(
+        ISecuritySchemeRepository repository,
+        IDeviceRepository deviceRepository)
     {
         this.repository = repository;
+        this.deviceRepository = deviceRepository;
     }
 
     public async Task<Result<SecuritySchemeUpdateResponse>> Handle(
@@ -17,17 +20,28 @@ public sealed class SecuritySchemeUpdateHandler
         CancellationToken cancellationToken)
     {
         var securityScheme = await repository.GetAsync(command.Id, cancellationToken);
-                        
-        if (securityScheme is not null)
+
+        if (securityScheme is null)
         {
-            securityScheme.Update(command.Name, command.Description);
-            
-            if (await repository.UpdateAsync(securityScheme, cancellationToken))
+            return Result<SecuritySchemeUpdateResponse>.Failure("Failed to update security scheme.");
+        }
+
+        if (await deviceRepository.ExistAsync(command.Device.SerialNumber, cancellationToken))
+        {
+            if (!(command.Device.SerialNumber == securityScheme.Device.SerialNumber))
             {
-                return Result<SecuritySchemeUpdateResponse>.Success(securityScheme.ToUpdateResponse());
+                return Result<SecuritySchemeUpdateResponse>.Failure(
+                    $"Can not update security scheme because device with serial number {command.Device.SerialNumber} already exist.");
             }
         }
 
+        securityScheme.Update(command.ToSecurityScheme());
+
+        if (await repository.UpdateAsync(securityScheme, cancellationToken))
+        {
+            await repository.SaveChangesAsync(cancellationToken);
+            return Result<SecuritySchemeUpdateResponse>.Success(securityScheme.ToUpdateResponse());
+        }
         return Result<SecuritySchemeUpdateResponse>.Failure("Failed to update security scheme.");
     }
 }

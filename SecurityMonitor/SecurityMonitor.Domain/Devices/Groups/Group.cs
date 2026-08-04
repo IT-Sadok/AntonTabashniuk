@@ -1,6 +1,7 @@
 ﻿using SecurityMonitor.Domain.Devices.Enums;
+using SecurityMonitor.Domain.Devices.Groups.Zones;
 
-namespace SecurityMonitor.Domain.Devices;
+namespace SecurityMonitor.Domain.Devices.Groups;
 
 public class Group
 {

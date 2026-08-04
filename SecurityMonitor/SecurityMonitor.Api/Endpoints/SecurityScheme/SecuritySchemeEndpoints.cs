@@ -5,7 +5,7 @@ using SecurityMonitor.Application.SecuritySchemes.Get;
 using SecurityMonitor.Application.SecuritySchemes.GetAll;
 using SecurityMonitor.Application.SecuritySchemes.Delete;
 using SecurityMonitor.Api.Endpoints.SecurityScheme.Requests;
-
+using SecurityMonitor.Api.Endpoints.SecurityScheme.Mappers;
 namespace SecurityMonitor.Api.Endpoints.SecurityScheme;
 
 public static class SecuritySchemeEndpoints
@@ -42,9 +42,7 @@ public static class SecuritySchemeEndpoints
 
     private static async Task<IResult> Update(int id, SecuritySchemeUpdateRequest request, SecuritySchemeUpdateHandler handler, CancellationToken cancellationToken)
     {
-        var command = new SecuritySchemeUpdateCommand(id, request.Name, request.Description);
-
-        var result = await handler.Handle(command, cancellationToken);
+        var result = await handler.Handle(request.ToCommand(id), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -68,9 +66,9 @@ public static class SecuritySchemeEndpoints
         return Results.Ok(result.Value);
     }
 
-    private static async Task<IResult> GetAll(SecuritySchemeGetAllHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> GetAll([AsParameters] SecuritySchemeGetAllQuery query, SecuritySchemeGetAllHandler handler, CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
 
         if (!result.IsSuccess)
         {
