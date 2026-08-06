@@ -1,4 +1,4 @@
-﻿using SecurityMonitor.Api.Endpoints.Zone;
+﻿using SecurityMonitor.Api.Endpoints.Zone.Models;
 using SecurityMonitor.Domain.Devices.Enums;
 
 namespace SecurityMonitor.Api.Endpoints.Device.Requests;
@@ -8,5 +8,5 @@ public record DeviceUpdateRequest(
     string SerialNumber,
     DeviceType DeviceType,
     DeviceState DeviceState,
-    List<UpdateZoneRequest> Zones
+    UpdateZonesRequest Zones
     );
