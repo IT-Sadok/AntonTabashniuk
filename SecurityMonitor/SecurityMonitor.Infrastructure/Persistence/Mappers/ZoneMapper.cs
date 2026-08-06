@@ -25,6 +25,7 @@ public static class ZoneMapper
     {
         return new Zone(
             entity.Id,
+            entity.DeviceId,
             entity.GroupId,
             entity.Name,
             entity.State,

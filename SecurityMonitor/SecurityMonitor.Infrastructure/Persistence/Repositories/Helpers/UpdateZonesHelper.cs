@@ -10,17 +10,21 @@ public static class UpdateZonesHelper
         if (zoneEntities is null || zoneEntities.Count == 0)
             return false;
 
+        var dictionary = zones.ToDictionary(x => x.Id);
+
         foreach (var zoneForUpdate in zoneEntities)
         {
-            var zone = zones.FirstOrDefault(x => x.Id == zoneForUpdate.Id);
+            var zone = dictionary[zoneForUpdate.Id];
+
             if (zone is null)
             {
                 return false;
             }
-            zoneForUpdate.Name = zone?.Name ?? zoneForUpdate.Name;
-            zoneForUpdate.Type = zone?.Type ?? zoneForUpdate.Type;
-            zoneForUpdate.State = zone?.State ?? zoneForUpdate.State;
-            zoneForUpdate.GroupId = zone?.GroupId ?? zoneForUpdate.GroupId;
+
+            zoneForUpdate.Name = zoneForUpdate.Name;
+            zoneForUpdate.Type = zoneForUpdate.Type;
+            zoneForUpdate.State = zoneForUpdate.State;
+            zoneForUpdate.GroupId = zoneForUpdate.GroupId;
         }
 
         return true;
