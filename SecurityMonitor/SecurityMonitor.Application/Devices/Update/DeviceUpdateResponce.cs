@@ -8,5 +8,5 @@ public sealed record DeviceUpdateResponce(
     string SerialNumber,
     DeviceType DeviceType,
     DeviceState DeviceState,
-    List<UpdateZoneResponce> Zones
+    UpdateZonesResponce UpdateZonesResponce
     );

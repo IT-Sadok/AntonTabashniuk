@@ -13,18 +13,19 @@ public static class DeviceMapper
             response.SerialNumber,
             response.DeviceType,
             response.DeviceState,
-            response.Zones.ToDomain()
+            response.UpdateZonesCommand.ToDomain()
         );
     }
 
-    public static DeviceUpdateResponce ToResponce(this Device response)
+    public static DeviceUpdateResponce ToUpdateResponce(this Device response)
     {
         return new DeviceUpdateResponce(
             response.Id,
             response.SerialNumber,
             response.DeviceType,
             response.DeviceState,
-            response.Zones.ToResponce()
+            response.Zones.ToUpdateResponce(response.Id)
         );
     }
+
 }

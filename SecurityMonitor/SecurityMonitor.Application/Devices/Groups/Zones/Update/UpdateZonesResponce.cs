@@ -2,7 +2,7 @@
 
 namespace SecurityMonitor.Application.Devices.Groups.Zones.Update;
 
-public record UpdateZoneCommand(
+public record UpdateZonesResponce(
     int DeviceId,
     IReadOnlyList<UpdateZoneModel> Zones
-    );
+);
