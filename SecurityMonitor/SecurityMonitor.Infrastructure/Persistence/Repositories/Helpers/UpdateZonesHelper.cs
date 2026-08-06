@@ -8,37 +8,10 @@ public static class UpdateZonesHelper
     public static bool UpdateZones(List<Zone> zones, List<ZoneEntity> zoneEntities, ApplicationDbContext context)
     {
         zoneEntities ??= [];
+
         var dbDictionary = zoneEntities.ToDictionary(x => x.Id);
 
-        var dictionary = zones.ToDictionary(x => x.Id);
-
-        foreach (var zone in zones)
-        {
-            if (zone.Id == 0)
-            {
-                zoneEntities.Add(new ZoneEntity
-                {
-                    DeviceId = zone.DeviceId,
-                    GroupId = zone.GroupId,
-                    Name = zone.Name,
-                    State = zone.State,
-                    Type = zone.Type
-                });
-
-                continue;
-            }
-
-            if (!dbDictionary.TryGetValue(zone.Id, out var entity))
-            {
-                return false;
-            }
-
-            entity.Name = zone.Name;
-            entity.GroupId = zone.GroupId;
-            entity.State = zone.State;
-            entity.Type = zone.Type;
-        }
-
+        // DELETE
         var requestIds = zones
             .Where(x => x.Id != 0)
             .Select(x => x.Id)
@@ -48,8 +21,36 @@ public static class UpdateZonesHelper
             .Where(x => !requestIds.Contains(x.Id))
             .ToList();
 
-        context.RemoveRange(entitiesToDelete);
-        
+        context.Zones.RemoveRange(entitiesToDelete);
+
+        // UPDATE
+        foreach (var zone in zones.Where(x => x.Id != 0))
+        {
+            if (!dbDictionary.TryGetValue(zone.Id, out var entity))
+            {
+                return false;
+            }
+
+            entity.Name = zone.Name;
+            entity.GroupId = null;
+            entity.State = zone.State;
+            entity.Type = zone.Type;
+        }
+
+        // CREATE
+        var entitiesToCreate = zones
+            .Where(x => x.Id == 0)
+            .Select(zone => new ZoneEntity
+            {
+                DeviceId = zone.DeviceId,
+                GroupId = null,
+                Name = zone.Name,
+                State = zone.State,
+                Type = zone.Type
+            });
+
+        context.Zones.AddRange(entitiesToCreate);
+
         return true;
     }
 }
