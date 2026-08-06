@@ -57,7 +57,7 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
         securitySchemeEntity.Name = securityScheme.Name;
         securitySchemeEntity.Description = securityScheme.Description;
 
-        return UpdateDeviceHelper.UpdateDevice(securityScheme.Device, securitySchemeEntity.Device);
+        return UpdateDeviceHelper.UpdateDevice(securityScheme.Device, securitySchemeEntity.Device, _dbContext);
     }
 
     public async Task<int> AddAsync(SecurityScheme securityScheme, CancellationToken ct)

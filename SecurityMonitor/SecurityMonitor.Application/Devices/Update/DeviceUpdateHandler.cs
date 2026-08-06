@@ -25,7 +25,7 @@ public class DeviceUpdateHandler
                 return Result<bool>.Failure($"Device with serial number {command.SerialNumber} already exist");
             }
              
-            device.Update(command.ToDomain());
+            device.InitializeDevice(command.ToDomain());
 
             if (await repository.UpdateAsync(device, cancellationToken))
             {

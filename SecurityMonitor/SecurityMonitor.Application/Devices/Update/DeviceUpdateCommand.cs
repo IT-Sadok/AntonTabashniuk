@@ -8,5 +8,5 @@ public sealed record DeviceUpdateCommand(
     string SerialNumber,
     DeviceType DeviceType,
     DeviceState DeviceState,
-    UpdateZoneCommand UpdateZonesCommand
+    UpdateZoneCommand Zones
     );

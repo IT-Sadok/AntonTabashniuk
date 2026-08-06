@@ -35,7 +35,7 @@ public sealed class SecuritySchemeUpdateHandler
             }
         }
 
-        securityScheme.Update(command.ToSecurityScheme());
+        securityScheme.InitializeScheme(command.ToSecurityScheme());
 
         if (await repository.UpdateAsync(securityScheme, cancellationToken))
         {

@@ -5,7 +5,7 @@ namespace SecurityMonitor.Infrastructure.Persistence.Repositories.Helpers;
 
 public static class UpdateDeviceHelper 
 {
-    public static bool UpdateDevice(Device device, DeviceEntity deviceEntity)
+    public static bool UpdateDevice(Device device, DeviceEntity deviceEntity, ApplicationDbContext _dbContext)
     {
         if (deviceEntity is null)
             return false;
@@ -20,6 +20,6 @@ public static class UpdateDeviceHelper
             return false;
         }
 
-        return UpdateZonesHelper.UpdateZones(device.Zones, deviceEntity.Zones);
+        return UpdateZonesHelper.UpdateZones(device.Zones, deviceEntity.Zones, _dbContext);
     }
 }

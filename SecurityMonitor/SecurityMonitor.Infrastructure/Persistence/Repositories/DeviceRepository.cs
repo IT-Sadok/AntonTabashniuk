@@ -33,7 +33,7 @@ public class DeviceRepository : IDeviceRepository
             .Include(g => g.Zones)
             .FirstOrDefaultAsync(x => x.Id == device.Id, cancellationToken);
 
-        return UpdateDeviceHelper.UpdateDevice(device, deviceEntity!);
+        return UpdateDeviceHelper.UpdateDevice(device, deviceEntity!, _dbContext);
     }
 
     public Task SaveChangesAsync(CancellationToken ct)

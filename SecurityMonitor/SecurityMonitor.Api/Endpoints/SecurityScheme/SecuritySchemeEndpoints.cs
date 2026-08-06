@@ -25,7 +25,7 @@ public static class SecuritySchemeEndpoints
         group.MapDelete(SecuritySchemeRoutes.Delete, Delete);
 
         return endpoints;
-    }
+    }   
     private static async Task<IResult> Create(SecuritySchemeCreateCommand command, SecuritySchemeCreateHandler handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(command, cancellationToken);

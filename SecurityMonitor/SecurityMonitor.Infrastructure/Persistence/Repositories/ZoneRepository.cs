@@ -27,7 +27,7 @@ public class ZoneRepository : IZoneRepository
             .Where(x => ids.Contains(x.Id))
             .ToListAsync(cancellationToken);
         
-        if(UpdateZonesHelper.UpdateZones(zones, zoneEntities))
+        if(UpdateZonesHelper.UpdateZones(zones, zoneEntities, _dbContext))
         {
             return true;
         }

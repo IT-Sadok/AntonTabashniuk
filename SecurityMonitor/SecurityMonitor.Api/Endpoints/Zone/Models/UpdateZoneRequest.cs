@@ -2,7 +2,7 @@
 namespace SecurityMonitor.Api.Endpoints.Zone.Models;
 
 public record UpdateZoneRequest(
-    int ZoneId,
+    int ZoneId, 
     int DeviceId,
     int? GroupId,
     string Name,
