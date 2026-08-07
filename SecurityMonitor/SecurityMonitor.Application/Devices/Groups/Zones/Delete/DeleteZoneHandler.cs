@@ -14,21 +14,9 @@ public sealed class DeleteZoneHandler
         DeleteZoneCommand command,
         CancellationToken cancellationToken)
     {
-        var zones = await repository.GetAllAsync(
-            command.ZonesIds,
-            cancellationToken);
-
-        var existingZoneIds = zones
-            .Select(z => z.Id)
-            .ToHashSet();
-
-        var zonesToDelete = command.ZonesIds
-            .Where(id => existingZoneIds.Contains(id))
-            .ToList();
-
-        if (zonesToDelete.Count > 0)
+        if (command.ZonesIds is not null && command.ZonesIds.Count > 0)
         {
-            if(await repository.DeleteAsync(zonesToDelete, cancellationToken))
+            if(await repository.DeleteAsync(command.ZonesIds, cancellationToken))
             {
                 return Result<bool>.Success(true);
             }

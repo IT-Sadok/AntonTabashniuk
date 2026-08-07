@@ -2,7 +2,7 @@
 
 namespace SecurityMonitor.Application.Devices.Groups.Zones.Create;
 
-public record CreateZonesResponce(
+public record CreateZonesResponse(
     int DeviceId,
     IReadOnlyList<CreateZoneModel> Zones
 );

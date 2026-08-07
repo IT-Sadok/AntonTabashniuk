@@ -45,7 +45,7 @@ public class ZoneRepository : IZoneRepository
         return entities.Select(e => e.ToDomain()).ToList();
     }
 
-    public async Task<bool> DeleteAsync(List<int> zonesIds, CancellationToken cancellationToken)
+    public async Task<bool> DeleteAsync(IReadOnlyList<int> zonesIds, CancellationToken cancellationToken)
     {
         return await _dbContext.Zones
             .Where(x => zonesIds.Contains(x.Id))

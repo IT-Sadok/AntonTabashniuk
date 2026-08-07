@@ -11,7 +11,7 @@ public sealed class CreateZoneHandler
         this.repository = repository;
     }
 
-    public async Task<Result<CreateZonesResponce>> Handle(
+    public async Task<Result<CreateZonesResponse>> Handle(
         CreateZoneCommand command,
         CancellationToken cancellationToken)
     {
@@ -21,11 +21,11 @@ public sealed class CreateZoneHandler
             
             if(createdZones is not null && createdZones.Count > 0) 
             {
-                return Result<CreateZonesResponce>.Success(createdZones.ToCreateResponce(command.DeviceId));
+                return Result<CreateZonesResponse>.Success(createdZones.ToCreateResponce(command.DeviceId));
             }
         }
 
-        return Result<CreateZonesResponce>.Failure("Failed to update zones.");
+        return Result<CreateZonesResponse>.Failure("Failed to update zones.");
     }
 }
 

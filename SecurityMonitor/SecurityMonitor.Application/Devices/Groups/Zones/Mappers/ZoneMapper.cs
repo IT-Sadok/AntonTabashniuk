@@ -8,9 +8,9 @@ namespace SecurityMonitor.Application.Devices.Groups.Zones.Mappers;
 public static class ZoneMapper
 {
     #region Create
-    public static CreateZonesResponce ToCreateResponce(this List<Zone> zones, int deviceId)
+    public static CreateZonesResponse ToCreateResponce(this List<Zone> zones, int deviceId)
     {
-        return new CreateZonesResponce(
+        return new CreateZonesResponse(
             deviceId,
             zones.Select(z => z.ToCreateResponce()).ToList()
         );
