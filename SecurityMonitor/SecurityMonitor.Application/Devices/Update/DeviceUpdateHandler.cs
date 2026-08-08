@@ -3,7 +3,7 @@ using SecurityMonitor.Application.Devices.Mappers;
 
 namespace SecurityMonitor.Application.Devices.Update;
 
-public class DeviceUpdateHandler
+public class DeviceUpdateHandler : IRequestHandler<DeviceUpdateCommand, Result<bool>>
 {
     private readonly IDeviceRepository repository;
 

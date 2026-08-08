@@ -1,6 +1,7 @@
 ﻿using SecurityMonitor.Api.Endpoints.Zone.Mappers;
 using SecurityMonitor.Api.Endpoints.Zone.Models;
 using SecurityMonitor.Api.Endpoints.Zone.Requests;
+using SecurityMonitor.Application.Common;
 using SecurityMonitor.Application.Devices.Groups.Zones.Create;
 using SecurityMonitor.Application.Devices.Groups.Zones.Delete;
 using SecurityMonitor.Application.Devices.Groups.Zones.Update;
@@ -19,7 +20,7 @@ public static class ZoneEndpoints
 
         return endpoints;
     }
-    private static async Task<IResult> Create(CreateZonesRequest request, CreateZoneHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Create(CreateZonesRequest request, IRequestHandler<CreateZoneCommand, Result<CreateZonesResponse>> handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request.ToCommand(), cancellationToken);
 
@@ -33,7 +34,7 @@ public static class ZoneEndpoints
             result.Value);
     }
 
-    private static async Task<IResult> Update(UpdateZonesRequest request, UpdateZoneHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Update(UpdateZonesRequest request, IRequestHandler<UpdateZoneCommand, Result<bool>> handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request.ToCommand(), cancellationToken);
 
@@ -45,7 +46,7 @@ public static class ZoneEndpoints
         return Results.Ok(result.Value);
     }
 
-    private static async Task<IResult> Delete(DeleteZonesRequest request, DeleteZoneHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Delete(DeleteZonesRequest request, IRequestHandler<DeleteZoneCommand, Result<bool>> handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request.ToCommand(), cancellationToken);
 

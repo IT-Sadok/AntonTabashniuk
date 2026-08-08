@@ -2,7 +2,7 @@
 
 namespace SecurityMonitor.Application.Devices.Groups.Zones.Delete;
 
-public sealed class DeleteZoneHandler 
+public sealed class DeleteZoneHandler : IRequestHandler<DeleteZoneCommand, Result<bool>>
 {
     private readonly IZoneRepository repository;
     public DeleteZoneHandler(IZoneRepository repository)

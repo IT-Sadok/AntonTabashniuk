@@ -3,7 +3,7 @@ using SecurityMonitor.Application.Devices.Groups.Zones.Mappers;
 
 namespace SecurityMonitor.Application.Devices.Groups.Zones.Update;
 
-public sealed class UpdateZoneHandler
+public sealed class UpdateZoneHandler : IRequestHandler<UpdateZoneCommand, Result<bool>>
 {
     private readonly IZoneRepository repository;
     public UpdateZoneHandler(IZoneRepository repository)

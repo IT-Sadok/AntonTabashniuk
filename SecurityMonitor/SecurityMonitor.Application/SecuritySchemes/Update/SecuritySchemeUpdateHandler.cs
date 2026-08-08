@@ -3,7 +3,7 @@ using SecurityMonitor.Application.Devices;
 using SecurityMonitor.Application.SecuritySchemes.Mappers;
 namespace SecurityMonitor.Application.SecuritySchemes.Update;
 
-public sealed class SecuritySchemeUpdateHandler
+public sealed class SecuritySchemeUpdateHandler : IRequestHandler<SecuritySchemeUpdateCommand, Result<SecuritySchemeUpdateResponse>>
 {
     private readonly ISecuritySchemeRepository repository;
     private readonly IDeviceRepository deviceRepository;

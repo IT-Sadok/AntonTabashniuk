@@ -2,7 +2,7 @@
 
 namespace SecurityMonitor.Application.SecuritySchemes.Delete;
 
-public class SecuritySchemeDeleteHandler
+public class SecuritySchemeDeleteHandler : IRequestHandler<SecuritySchemeDeleteCommand, Result<bool>>
 {
     private readonly ISecuritySchemeRepository repository;
 

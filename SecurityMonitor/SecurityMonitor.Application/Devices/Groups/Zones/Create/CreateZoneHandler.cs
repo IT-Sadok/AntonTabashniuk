@@ -3,7 +3,7 @@ using SecurityMonitor.Application.Devices.Groups.Zones.Mappers;
 
 namespace SecurityMonitor.Application.Devices.Groups.Zones.Create;
 
-public sealed class CreateZoneHandler
+public sealed class CreateZoneHandler : IRequestHandler<CreateZoneCommand, Result<CreateZonesResponse>>
 {
     private readonly IZoneRepository repository;
     public CreateZoneHandler(IZoneRepository repository)

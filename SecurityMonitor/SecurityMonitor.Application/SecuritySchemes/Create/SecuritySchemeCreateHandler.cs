@@ -4,7 +4,7 @@ using SecurityMonitor.Application.SecuritySchemes.Mappers;
 
 namespace SecurityMonitor.Application.SecuritySchemes.Create;
 
-public sealed class SecuritySchemeCreateHandler
+public sealed class SecuritySchemeCreateHandler : IRequestHandler<SecuritySchemeCreateCommand, Result<SecuritySchemeCreateResponse>>
 {
     private readonly ISecuritySchemeRepository repository;
     private readonly IDeviceRepository deviceRepository;
