@@ -1,4 +1,5 @@
-﻿using SecurityMonitor.Api.Endpoints.Zone.Mappers;
+﻿using Microsoft.AspNetCore.Mvc;
+using SecurityMonitor.Api.Endpoints.Zone.Mappers;
 using SecurityMonitor.Api.Endpoints.Zone.Models;
 using SecurityMonitor.Api.Endpoints.Zone.Requests;
 using SecurityMonitor.Application.Common;
@@ -10,7 +11,7 @@ namespace SecurityMonitor.Api.Endpoints.Zone;
 
 public static class ZoneEndpoints
 {
-    public static IEndpointRouteBuilder MapSecuritySchemeEndpoints(this IEndpointRouteBuilder endpoints)
+    public static IEndpointRouteBuilder MapZoneEndpoints(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost(ZoneRoutes.Base, Create);
 
@@ -20,7 +21,7 @@ public static class ZoneEndpoints
 
         return endpoints;
     }
-    private static async Task<IResult> Create(CreateZonesRequest request, IRequestHandler<CreateZoneCommand, Result<CreateZonesResponse>> handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Create([FromBody] CreateZonesRequest request, IRequestHandler<CreateZoneCommand, Result<CreateZonesResponse>> handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request.ToCommand(), cancellationToken);
 
@@ -34,7 +35,7 @@ public static class ZoneEndpoints
             result.Value);
     }
 
-    private static async Task<IResult> Update(UpdateZonesRequest request, IRequestHandler<UpdateZoneCommand, Result<bool>> handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Update([FromBody] UpdateZonesRequest request, IRequestHandler<UpdateZoneCommand, Result<bool>> handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request.ToCommand(), cancellationToken);
 
@@ -46,7 +47,7 @@ public static class ZoneEndpoints
         return Results.Ok(result.Value);
     }
 
-    private static async Task<IResult> Delete(DeleteZonesRequest request, IRequestHandler<DeleteZoneCommand, Result<bool>> handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Delete([FromBody] DeleteZonesRequest request, IRequestHandler<DeleteZoneCommand, Result<bool>> handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request.ToCommand(), cancellationToken);
 

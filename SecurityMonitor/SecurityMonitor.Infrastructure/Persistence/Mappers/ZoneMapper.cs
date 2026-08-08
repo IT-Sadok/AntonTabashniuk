@@ -10,6 +10,7 @@ public static class ZoneMapper
         return new ZoneEntity
         {
             Id = model.Id,
+            DeviceId = model.DeviceId,
             GroupId = model.GroupId,
             Name = model.Name,
             State = model.State,

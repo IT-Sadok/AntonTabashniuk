@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Api.DependencyInjection;
 using SecurityMonitor.Api.Endpoints.Device;
 using SecurityMonitor.Api.Endpoints.SecurityScheme;
+using SecurityMonitor.Api.Endpoints.Zone;
 using SecurityMonitor.Application.Devices;
 using SecurityMonitor.Application.Devices.Groups.Zones;
 using SecurityMonitor.Application.SecuritySchemes;
@@ -29,6 +30,7 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.MapSecuritySchemeEndpoints();
 app.MapDeviceEndpoints();
+app.MapZoneEndpoints();
 
 app.UseAuthentication();
 app.UseAuthorization();
