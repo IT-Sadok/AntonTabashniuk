@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Application.Devices.Groups.Zones;
 using SecurityMonitor.Domain.Devices.Groups.Zones;
+using SecurityMonitor.Infrastructure.Persistence.Entities;
 using SecurityMonitor.Infrastructure.Persistence.Mappers;
-using SecurityMonitor.Infrastructure.Persistence.Repositories.Helpers;
 
 namespace SecurityMonitor.Infrastructure.Persistence.Repositories;
 
@@ -16,23 +16,18 @@ public class ZoneRepository : IZoneRepository
     }
     public async Task<bool> UpdateAsync(List<Zone> zones, CancellationToken cancellationToken)
     {
-        if(zones is null || zones.Count == 0)
-        {
-            return false;
-        }
-
         var ids = zones.Select(x => x.Id);
 
         var zoneEntities = await _dbContext.Zones
             .Where(x => ids.Contains(x.Id))
             .ToListAsync(cancellationToken);
         
-        if(UpdateZonesHelper.UpdateZones(zones, zoneEntities, _dbContext))
+        if(zoneEntities is null || zoneEntities.Count == 0)
         {
-            return true;
+            return false;
         }
 
-        return false;
+        return UpdateZones(zoneEntities, zones);
     }
 
     public async Task<List<Zone>> AddRangeAsync(List<Zone> zones, CancellationToken cancellationToken)
@@ -75,4 +70,55 @@ public class ZoneRepository : IZoneRepository
     {
         return _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    #region Helpers
+    private bool UpdateZones(List<ZoneEntity> zoneEntities, List<Zone> zones)
+    {
+        zoneEntities ??= [];
+
+        var dbDictionary = zoneEntities.ToDictionary(x => x.Id);
+
+        // DELETE
+        var requestIds = zones
+            .Where(x => x.Id != 0)
+            .Select(x => x.Id)
+            .ToHashSet();
+
+        var entitiesToDelete = zoneEntities
+            .Where(x => !requestIds.Contains(x.Id))
+            .ToList();
+
+        _dbContext.Zones.RemoveRange(entitiesToDelete);
+
+        // UPDATE
+        foreach (var zone in zones.Where(x => x.Id != 0))
+        {
+            if (!dbDictionary.TryGetValue(zone.Id, out var entity))
+            {
+                return false;
+            }
+
+            entity.Name = zone.Name;
+            entity.GroupId = null;
+            entity.State = zone.State;
+            entity.Type = zone.Type;
+        }
+
+        // CREATE
+        var entitiesToCreate = zones
+            .Where(x => x.Id == 0)
+            .Select(zone => new ZoneEntity
+            {
+                DeviceId = zone.DeviceId,
+                GroupId = null,
+                Name = zone.Name,
+                State = zone.State,
+                Type = zone.Type
+            });
+
+        _dbContext.Zones.AddRange(entitiesToCreate);
+
+        return true;
+    }
+    #endregion
 }

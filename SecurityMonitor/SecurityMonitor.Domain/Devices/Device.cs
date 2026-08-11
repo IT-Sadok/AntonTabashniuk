@@ -30,42 +30,4 @@ public class Device
         DeviceState = deviceState;
         Zones = zones;
     }
-    public void InitializeDevice(Device device) 
-    {
-        SerialNumber = device.SerialNumber;
-        DeviceType = device.DeviceType;
-        DeviceState = device.DeviceState;
-        InitializeZones(device.Zones);
-    }
-    private void InitializeZones(List<Zone> zones)
-    {
-        if (zones is null || zones.Count == 0) 
-            return;
-
-        Zones.Clear();
-        
-        foreach (var currentZone in zones)
-        {
-            Zones.Add(currentZone);
-        }
-    }
-    public void Update(Device device)
-    {
-        SerialNumber = device.SerialNumber;
-        DeviceType = device.DeviceType;
-        DeviceState = device.DeviceState;
-        UpdateZones(device.Zones);
-    }
-    private void UpdateZones(List<Zone> zones)
-    {
-        foreach (var currentZone in Zones)
-        {
-            var updatedZone = zones.FirstOrDefault(z => z.Id == currentZone.Id);
-
-            if (updatedZone is not null)
-            {
-                currentZone.Update(updatedZone);
-            }
-        }
-    }
 }

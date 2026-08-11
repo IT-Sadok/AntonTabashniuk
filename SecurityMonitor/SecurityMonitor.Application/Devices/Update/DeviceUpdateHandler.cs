@@ -1,4 +1,5 @@
 ﻿using SecurityMonitor.Application.Common;
+using SecurityMonitor.Application.Devices.Extensions;
 using SecurityMonitor.Application.Devices.Mappers;
 
 namespace SecurityMonitor.Application.Devices.Update;
@@ -24,8 +25,8 @@ public class DeviceUpdateHandler : IRequestHandler<DeviceUpdateCommand, Result<b
             {
                 return Result<bool>.Failure($"Device with serial number {command.SerialNumber} already exist");
             }
-             
-            device.InitializeDevice(command.ToDomain());
+
+            DeviceUpdatersExtensions.InitializeDevice(device, command.ToDomain());
 
             if (await repository.UpdateAsync(device, cancellationToken))
             {

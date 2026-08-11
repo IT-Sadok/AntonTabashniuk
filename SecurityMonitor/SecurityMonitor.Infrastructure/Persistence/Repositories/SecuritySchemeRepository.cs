@@ -1,19 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Application.SecuritySchemes;
 using SecurityMonitor.Domain.Administrative;
+using SecurityMonitor.Domain.Devices;
+using SecurityMonitor.Domain.Devices.Groups.Zones;
+using SecurityMonitor.Infrastructure.Persistence.Entities;
 using SecurityMonitor.Infrastructure.Persistence.Mappers;
-using SecurityMonitor.Infrastructure.Persistence.Repositories.Helpers;
 
 namespace SecurityMonitor.Infrastructure.Persistence.Repositories;
 
 public class SecuritySchemeRepository : ISecuritySchemeRepository
 {
-    private readonly ApplicationDbContext _dbContext; 
+    private readonly ApplicationDbContext _dbContext;
     public SecuritySchemeRepository(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
-    public async Task<int> GetTotalCountAsync(CancellationToken cancellationToken) 
+    public async Task<int> GetTotalCountAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.SecuritySchemes.CountAsync(cancellationToken);
     }
@@ -51,24 +53,24 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
                 .ThenInclude(x => x.Zones)
             .FirstOrDefaultAsync(x => x.Id == securityScheme.Id, cancellationToken);
 
-        if (securitySchemeEntity is null) 
+        if (securitySchemeEntity is null)
+        {
             return false;
-
+        }
         securitySchemeEntity.Name = securityScheme.Name;
         securitySchemeEntity.Description = securityScheme.Description;
-
-        return UpdateDeviceHelper.UpdateDevice(securityScheme.Device, securitySchemeEntity.Device, _dbContext);
+        return UpdateDevice(securitySchemeEntity.Device, securityScheme.Device);
     }
 
     public async Task<int> AddAsync(SecurityScheme securityScheme, CancellationToken ct)
     {
         var entity = securityScheme.ToEntity();
-        
+
         await _dbContext.SecuritySchemes.AddAsync(entity, ct);
         await SaveChangesAsync(ct);
 
         return entity.Id;
-    } 
+    }
     public async Task<bool> ExistsAsync(string name, CancellationToken ct)
     {
         return await _dbContext.SecuritySchemes.AnyAsync(x => x.Name == name, ct);
@@ -83,4 +85,69 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
     {
         return _dbContext.SaveChangesAsync(ct);
     }
+
+    #region Helpers
+    private bool UpdateDevice(DeviceEntity deviceEntity, Device device)
+    {
+        if (deviceEntity is null)
+        {
+            return false;
+        }
+
+        deviceEntity.SecuritySchemeId = device.SecuritySchemeId;
+        deviceEntity.SerialNumber = device.SerialNumber;
+        deviceEntity.DeviceState = device.DeviceState;
+        deviceEntity.DeviceType = device.DeviceType;
+        return UpdateZones(deviceEntity.Zones, device.Zones);
+    }
+
+    private bool UpdateZones(List<ZoneEntity> zoneEntities, List<Zone> zones)
+    {
+        zoneEntities ??= [];
+
+        var dbDictionary = zoneEntities.ToDictionary(x => x.Id);
+
+        // DELETE
+        var requestIds = zones
+            .Where(x => x.Id != 0)
+            .Select(x => x.Id)
+            .ToHashSet();
+
+        var entitiesToDelete = zoneEntities
+            .Where(x => !requestIds.Contains(x.Id))
+            .ToList();
+
+        _dbContext.Zones.RemoveRange(entitiesToDelete);
+
+        // UPDATE
+        foreach (var zone in zones.Where(x => x.Id != 0))
+        {
+            if (!dbDictionary.TryGetValue(zone.Id, out var entity))
+            {
+                return false;
+            }
+
+            entity.Name = zone.Name;
+            entity.GroupId = null;
+            entity.State = zone.State;
+            entity.Type = zone.Type;
+        }
+
+        // CREATE
+        var entitiesToCreate = zones
+            .Where(x => x.Id == 0)
+            .Select(zone => new ZoneEntity
+            {
+                DeviceId = zone.DeviceId,
+                GroupId = null,
+                Name = zone.Name,
+                State = zone.State,
+                Type = zone.Type
+            });
+
+        _dbContext.Zones.AddRange(entitiesToCreate);
+
+        return true;
+    }
+    #endregion
 }

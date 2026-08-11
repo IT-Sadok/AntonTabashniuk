@@ -22,18 +22,4 @@ public class SecurityScheme
         Description = description;
         Device = device;
     }
-
-    public void InitializeScheme(SecurityScheme security) 
-    {
-        Name = security.Name;
-        Description = security.Description;
-        Device?.InitializeDevice(security.Device);
-    }
-
-    public void Update(SecurityScheme security)
-    {
-        Name = security.Name;
-        Description = security.Description;
-        Device?.Update(security.Device);
-    }
 }
