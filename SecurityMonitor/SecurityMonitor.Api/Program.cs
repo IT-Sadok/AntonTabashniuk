@@ -15,10 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
            .UseSnakeCaseNamingConvention()
 );
-
-builder.Services.AddSecuritySchemeHandlers();
-builder.Services.AddDeviceHandlers();
-builder.Services.AddZoneHandlers();
+builder.Services.AddRequestHandlers();
 builder.Services.AddScoped<ISecuritySchemeRepository, SecuritySchemeRepository>();
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
