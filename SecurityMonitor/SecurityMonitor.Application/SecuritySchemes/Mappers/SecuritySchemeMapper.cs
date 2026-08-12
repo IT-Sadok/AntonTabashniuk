@@ -14,7 +14,7 @@ public static class SecuritySchemeMapper
             securityScheme.Id,
             securityScheme.Name,
             securityScheme.Description,
-            securityScheme.Device.ToResponce());
+            securityScheme.Device.ToUpdateResponce());
     }
     public static SecuritySchemeUpdateResponse ToUpdateResponse(this SecurityScheme securityScheme)
     {
@@ -22,7 +22,7 @@ public static class SecuritySchemeMapper
             securityScheme.Id,
             securityScheme.Name,
             securityScheme.Description,
-            securityScheme.Device.ToResponce());
+            securityScheme.Device.ToUpdateResponce());
     }
 
     public static SecurityScheme ToSecurityScheme(this SecuritySchemeCreateCommand createCommand)

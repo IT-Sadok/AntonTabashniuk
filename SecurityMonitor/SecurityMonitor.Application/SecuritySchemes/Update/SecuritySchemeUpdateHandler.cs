@@ -1,9 +1,10 @@
 ﻿using SecurityMonitor.Application.Common;
 using SecurityMonitor.Application.Devices;
+using SecurityMonitor.Application.SecuritySchemes.Extensions;
 using SecurityMonitor.Application.SecuritySchemes.Mappers;
 namespace SecurityMonitor.Application.SecuritySchemes.Update;
 
-public sealed class SecuritySchemeUpdateHandler
+public sealed class SecuritySchemeUpdateHandler : IRequestHandler<SecuritySchemeUpdateCommand, Result<SecuritySchemeUpdateResponse>>
 {
     private readonly ISecuritySchemeRepository repository;
     private readonly IDeviceRepository deviceRepository;
@@ -35,7 +36,7 @@ public sealed class SecuritySchemeUpdateHandler
             }
         }
 
-        securityScheme.Update(command.ToSecurityScheme());
+        SecuritySchemeUpdatersExtensions.InitializeScheme(securityScheme, command.ToSecurityScheme());
 
         if (await repository.UpdateAsync(securityScheme, cancellationToken))
         {

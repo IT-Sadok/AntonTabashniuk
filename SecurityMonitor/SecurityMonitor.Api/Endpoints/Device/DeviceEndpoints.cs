@@ -1,5 +1,6 @@
 ﻿using SecurityMonitor.Api.Endpoints.Device.Mappers;
 using SecurityMonitor.Api.Endpoints.Device.Requests;
+using SecurityMonitor.Application.Common;
 using SecurityMonitor.Application.Devices.Update;
 
 namespace SecurityMonitor.Api.Endpoints.Device;
@@ -13,7 +14,7 @@ public static class DeviceEndpoints
         return endpoints;
     }
 
-    private static async Task<IResult> Update(DeviceUpdateRequest request, DeviceUpdateHandler handler, CancellationToken cancellationToken)
+    private static async Task<IResult> Update(DeviceUpdateRequest request, IRequestHandler<DeviceUpdateCommand, Result<bool>> handler, CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request.ToCommand(), cancellationToken);
 

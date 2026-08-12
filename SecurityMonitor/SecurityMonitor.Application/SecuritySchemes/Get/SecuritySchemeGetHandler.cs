@@ -3,7 +3,7 @@ using SecurityMonitor.Application.SecuritySchemes.Mappers;
 
 namespace SecurityMonitor.Application.SecuritySchemes.Get;
 
-public sealed class SecuritySchemeGetHandler
+public sealed class SecuritySchemeGetHandler : IRequestHandler<SecuritySchemeGetQuery, Result<SecuritySchemeGetResponse>>
 {
     private readonly ISecuritySchemeRepository repository;
 

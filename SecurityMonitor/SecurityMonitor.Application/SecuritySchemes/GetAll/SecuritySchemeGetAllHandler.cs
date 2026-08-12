@@ -2,12 +2,11 @@
 using SecurityMonitor.Application.SecuritySchemes.Get;
 using SecurityMonitor.Application.SecuritySchemes.Mappers;
 using SecurityMonitor.Domain.Administrative;
-using System.ComponentModel.DataAnnotations;
 
 namespace SecurityMonitor.Application.SecuritySchemes.GetAll;
 
 
-public sealed class SecuritySchemeGetAllHandler
+public sealed class SecuritySchemeGetAllHandler : IRequestHandler<SecuritySchemeGetAllQuery, Result<PagedResult<SecuritySchemeGetResponse>>>
 {
     private readonly ISecuritySchemeRepository repository;
     private const int MaxPageSize = 50;

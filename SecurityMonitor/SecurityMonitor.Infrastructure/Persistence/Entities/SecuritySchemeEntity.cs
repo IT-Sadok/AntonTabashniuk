@@ -1,4 +1,6 @@
-﻿namespace SecurityMonitor.Infrastructure.Persistence.Entities;
+﻿using SecurityMonitor.Domain.Administrative;
+
+namespace SecurityMonitor.Infrastructure.Persistence.Entities;
 
 public class SecuritySchemeEntity
 {

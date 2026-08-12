@@ -10,6 +10,7 @@ public static class ZoneMapper
         return new ZoneEntity
         {
             Id = model.Id,
+            DeviceId = model.DeviceId,
             GroupId = model.GroupId,
             Name = model.Name,
             State = model.State,
@@ -23,14 +24,14 @@ public static class ZoneMapper
 
     public static Zone ToDomain(this ZoneEntity entity)
     {
-        return new Zone
-        {
-            Id = entity.Id,
-            GroupId = entity.GroupId,
-            Name = entity.Name,
-            State = entity.State,
-            Type = entity.Type,
-        };
+        return new Zone(
+            entity.Id,
+            entity.DeviceId,
+            entity.GroupId,
+            entity.Name,
+            entity.State,
+            entity.Type
+        );
     }
     public static List<Zone> ToDomain(this List<ZoneEntity> entity)
     {
