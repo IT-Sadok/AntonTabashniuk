@@ -1,5 +1,5 @@
-﻿using SecurityMonitor.Api.Endpoints.Device.Requests;
-using SecurityMonitor.Api.Endpoints.Zone.Mappers;
+﻿using SecurityMonitor.Api.Endpoints.Device.Groups.Zone.Mappers;
+using SecurityMonitor.Api.Endpoints.Device.Requests;
 using SecurityMonitor.Application.Devices.Update;
 
 namespace SecurityMonitor.Api.Endpoints.Device.Mappers;

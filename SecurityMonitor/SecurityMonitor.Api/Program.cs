@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Api.DependencyInjection;
 using SecurityMonitor.Api.Endpoints.Device;
+using SecurityMonitor.Api.Endpoints.Device.Groups.Zone;
 using SecurityMonitor.Api.Endpoints.SecurityScheme;
-using SecurityMonitor.Api.Endpoints.Zone;
 using SecurityMonitor.Application.Devices;
 using SecurityMonitor.Application.Devices.Groups.Zones;
 using SecurityMonitor.Application.SecuritySchemes;

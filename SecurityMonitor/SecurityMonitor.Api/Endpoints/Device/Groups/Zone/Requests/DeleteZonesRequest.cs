@@ -1,4 +1,4 @@
-﻿namespace SecurityMonitor.Api.Endpoints.Zone.Requests;
+﻿namespace SecurityMonitor.Api.Endpoints.Device.Groups.Zone.Requests;
 
 public record DeleteZonesRequest(
     int DeviceId,

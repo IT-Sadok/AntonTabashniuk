@@ -1,9 +1,8 @@
 ﻿using SecurityMonitor.Domain.Devices.Enums;
+namespace SecurityMonitor.Api.Endpoints.Device.Groups.Zone.Models;
 
-namespace SecurityMonitor.Api.Endpoints.Zone.Models;
-
-public record CreateZoneRequest(
-    int ZoneId,
+public record UpdateZoneRequest(
+    int ZoneId, 
     int DeviceId,
     int? GroupId,
     string Name,
