@@ -43,6 +43,7 @@ public static class GroupMappings
     {
         return new CreateGroupModel(
             request.DeviceId,
+            0,
             request.Name,
             request.State,
             request.ZonesIds

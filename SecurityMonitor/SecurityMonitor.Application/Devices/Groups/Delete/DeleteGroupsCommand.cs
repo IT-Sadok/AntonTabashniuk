@@ -2,5 +2,5 @@
 
 public sealed record DeleteGroupsCommand(
     int DeviceId,
-    IReadOnlyList<int> ZoneIds
+    IReadOnlyList<int> GroupIds
     );

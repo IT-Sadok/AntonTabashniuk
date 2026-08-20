@@ -24,12 +24,13 @@ public static class GroupMapper
     public static Group ToDomain(this GroupEntity entity)
     {
         return new Group
-        {
-            Id = entity.Id,
-            Zones = entity.Zones.ToDomain(),
-            Name = entity.Name,
-            State = entity.State,   
-        };
+        (
+            entity.Id,
+            entity.DeviceId,
+            entity.Name,
+            entity.State,   
+            entity.Zones.ToDomain()
+        );
     }
 
     public static List<Group> ToDomain(this List<GroupEntity> entity)
