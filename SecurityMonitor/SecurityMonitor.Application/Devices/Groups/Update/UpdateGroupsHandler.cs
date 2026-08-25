@@ -17,7 +17,7 @@ public class UpdateGroupsHandler : IRequestHandler<UpdateGroupsCommand, Result<U
     {
         if (command.Groups is not null && command.Groups.Count > 0)
         {
-            var updatedGroups = await repository.UpdateAsync(command.ToDomain(), cancellationToken);
+            var updatedGroups = await repository.UpdateAsync(command.DeviceId, command.ToDomain(), cancellationToken);
 
             if (updatedGroups is not null && updatedGroups.Count > 0)
             {
