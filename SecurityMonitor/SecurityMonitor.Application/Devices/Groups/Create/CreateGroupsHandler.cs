@@ -23,7 +23,7 @@ public class CreateGroupsHandler : IRequestHandler<CreateGroupsCommand, Result<C
 
             if(existingGroups is null || existingGroups.Count == 0) 
             {
-                var createdGroups = await repository.AddRangeAsync(command.ToDomain(), cancellationToken);
+                var createdGroups = await repository.AddRangeAsync(command.DeviceId, command.ToDomain(), cancellationToken);
 
                 if (createdGroups is not null && createdGroups.Count > 0)
                 {

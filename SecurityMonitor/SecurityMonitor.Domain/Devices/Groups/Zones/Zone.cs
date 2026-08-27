@@ -11,9 +11,10 @@ public class Zone
     public ZoneState State { get; set; }
     public ZoneType Type { get; set; }
 
-    public Zone(int id)
+    public Zone(int id, int deviceId)
     {
         Id = id;
+        DeviceId = deviceId;
     }
 
     public Zone(

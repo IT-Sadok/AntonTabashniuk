@@ -4,6 +4,7 @@ using SecurityMonitor.Application.Devices.Groups.Create;
 using SecurityMonitor.Application.Devices.Groups.Delete;
 using SecurityMonitor.Application.Devices.Groups.Update;
 using SecurityMonitor.Application.Devices.Groups.Zones.Models;
+using SecurityMonitor.Domain.Devices;
 
 namespace SecurityMonitor.Api.Endpoints.Device.Groups.Mappers;
 
@@ -14,13 +15,13 @@ public static class GroupMappings
     {
         return new UpdateGroupsCommand(
             request.DeviceId,
-            [.. request.GroupIds.Select(z => z.ToCommand())]
+            [.. request.Groups.Select(z => z.ToCommand(request.DeviceId))]
             );
     }
-    public static UpdateGroupModel ToCommand(this UpdateGroupRequest request)
+    public static UpdateGroupModel ToCommand(this UpdateGroupRequest request, int deviceId)
     {
         return new UpdateGroupModel(
-            request.DeviceId,
+            deviceId,
             request.GroupId,
             request.Name,
             request.State,

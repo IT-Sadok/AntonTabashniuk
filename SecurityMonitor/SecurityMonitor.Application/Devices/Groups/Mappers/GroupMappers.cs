@@ -38,7 +38,7 @@ public static class GroupMappers
             deviceId,
             Group.Name,
             Group.State,
-            [.. Group.ZonesIds.Select(x=> new Zone(x))]
+            [.. Group.ZonesIds.Select(x=> new Zone(x, deviceId))]
             );
     }
     #endregion
@@ -68,11 +68,11 @@ public static class GroupMappers
     public static Group ToDomain(this UpdateGroupModel Group, int deviceId)
     {
         return new Group(
-            deviceId,
             Group.GroupId,
+            deviceId,
             Group.Name,
             Group.State,
-            [.. Group.Zones.Select(x => new Zone(x))]
+            [.. Group.Zones.Select(x => new Zone(x, deviceId))]
             );
     }
     #endregion

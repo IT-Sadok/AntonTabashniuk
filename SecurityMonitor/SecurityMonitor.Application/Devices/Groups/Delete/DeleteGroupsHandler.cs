@@ -15,7 +15,7 @@ public class DeleteGroupsHandler : IRequestHandler<DeleteGroupsCommand, Result<b
     {
         if (command.GroupIds is not null && command.GroupIds.Count > 0)
         {
-            if (await repository.DeleteAsync(command.GroupIds, cancellationToken))
+            if (await repository.DeleteAsync(command.DeviceId, command.GroupIds, cancellationToken))
             {
                 return Result<bool>.Success(true);
             }

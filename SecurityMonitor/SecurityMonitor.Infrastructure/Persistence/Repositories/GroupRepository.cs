@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Application.Devices.Groups;
+using SecurityMonitor.Domain.Devices;
 using SecurityMonitor.Domain.Devices.Groups.Zones;
 using SecurityMonitor.Infrastructure.Persistence.Entities;
 using SecurityMonitor.Infrastructure.Persistence.Mappers;
@@ -38,20 +39,67 @@ public class GroupRepository : IGroupRepository
             .Select(x => x.ToDomain())];
     }
 
-    public async Task<List<Group>> AddRangeAsync(List<Group> groups, CancellationToken cancellationToken)
+    public async Task<List<Group>> AddRangeAsync(
+        int deviceId,
+        List<Group> groups,
+        CancellationToken cancellationToken)
     {
-        var entities = groups.ToEntity();
+        var zoneIds = groups
+            .SelectMany(x => x.Zones)
+            .Select(x => x.Id)
+            .Where(x => x != 0)
+            .Distinct()
+            .ToList();
+
+        var zonesById = await _dbContext.Zones
+            .Where(x =>
+                x.DeviceId == deviceId &&
+                zoneIds.Contains(x.Id))
+            .ToDictionaryAsync(x => x.Id, cancellationToken);
+
+        var entities = new List<GroupEntity>();
+
+        foreach (var group in groups)
+        {
+            var entity = new GroupEntity
+            {
+                DeviceId = deviceId,
+                Name = group.Name,
+                State = group.State
+            };
+
+            foreach (var zone in group.Zones)
+            {
+                if (!zonesById.TryGetValue(zone.Id, out var zoneEntity))
+                {
+                    return [];
+                }
+
+                entity.Zones.Add(zoneEntity);
+            }
+
+            entities.Add(entity);
+        }
 
         await _dbContext.Groups.AddRangeAsync(entities, cancellationToken);
+
         await SaveChangesAsync(cancellationToken);
 
-        return [.. entities.Select(e => e.ToDomain())];
+        return [.. entities.Select(x => x.ToDomain())];
     }
 
-    public async Task<bool> DeleteAsync(IReadOnlyList<int> groupsIds, CancellationToken cancellationToken)
+    public async Task<bool> DeleteAsync(int deviceId, IReadOnlyList<int> groupsIds, CancellationToken cancellationToken)
     {
+        await _dbContext.Zones
+            .Where(x => x.DeviceId == deviceId &&
+                x.GroupId != null &&
+                groupsIds.Contains(x.GroupId.Value))
+            .ExecuteUpdateAsync(x => 
+                x.SetProperty(z => z.GroupId, (int?)null), cancellationToken);
+
         return await _dbContext.Groups
-            .Where(x => groupsIds.Contains(x.Id))
+            .Where(x => x.DeviceId == deviceId &&
+            groupsIds.Contains(x.Id))
             .ExecuteDeleteAsync(cancellationToken) > 0;
     }
 
