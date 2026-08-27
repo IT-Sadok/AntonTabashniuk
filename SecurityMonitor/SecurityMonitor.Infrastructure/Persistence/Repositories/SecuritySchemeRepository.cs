@@ -2,6 +2,7 @@
 using SecurityMonitor.Application.SecuritySchemes;
 using SecurityMonitor.Domain.Administrative;
 using SecurityMonitor.Domain.Devices;
+using SecurityMonitor.Domain.Devices.Groups;
 using SecurityMonitor.Domain.Devices.Groups.Zones;
 using SecurityMonitor.Infrastructure.Persistence.Entities;
 using SecurityMonitor.Infrastructure.Persistence.Mappers;
@@ -98,7 +99,18 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
         deviceEntity.SerialNumber = device.SerialNumber;
         deviceEntity.DeviceState = device.DeviceState;
         deviceEntity.DeviceType = device.DeviceType;
-        return UpdateZones(deviceEntity.Zones, device.Zones);
+
+        if (!UpdateZones(deviceEntity.Zones, device.Zones))
+        {
+            return false;
+        }
+
+        if (!UpdateGroups(deviceEntity.Groups, device.Groups, deviceEntity.Zones))
+        {
+            return false;
+        }
+        
+        return true;
     }
 
     private bool UpdateZones(List<ZoneEntity> zoneEntities, List<Zone> zones)
@@ -149,5 +161,94 @@ public class SecuritySchemeRepository : ISecuritySchemeRepository
 
         return true;
     }
+    private bool UpdateGroups(
+        List<GroupEntity> groupEntities,
+        List<Group> groups,
+        List<ZoneEntity> zoneEntities)
+    {
+        groupEntities ??= [];
+        groups ??= [];
+        zoneEntities ??= [];
+
+        var dbDictionary = groupEntities.ToDictionary(x => x.Id);
+        var zonesDictionary = zoneEntities.ToDictionary(x => x.Id);
+
+        // DELETE
+        var requestIds = groups
+            .Where(x => x.Id != 0)
+            .Select(x => x.Id)
+            .ToHashSet();
+
+        var entitiesToDelete = groupEntities
+            .Where(x => !requestIds.Contains(x.Id))
+            .ToList();
+
+        _dbContext.Groups.RemoveRange(entitiesToDelete);
+
+        // UPDATE
+        foreach (var group in groups.Where(x => x.Id != 0))
+        {
+            if (!dbDictionary.TryGetValue(
+                    group.Id,
+                    out var entity))
+            {
+                return false;
+            }
+
+            entity.Name = group.Name;
+            entity.State = group.State;
+
+            UpdateGroupZones(group.Id, group.Zones, zonesDictionary);
+        }
+
+        // CREATE
+        foreach (var group in groups.Where(x => x.Id == 0))
+        {
+            var entity = new GroupEntity
+            {
+                DeviceId = group.DeviceId,
+                Name = group.Name,
+                State = group.State
+            };
+
+            _dbContext.Groups.Add(entity);
+        }
+
+        return true;
+    }
+
+    private static void UpdateGroupZones(
+        int groupId,
+        List<Zone> requestedZones,
+        Dictionary<int, ZoneEntity> zonesDictionary)
+    {
+        var requestedZoneIds = requestedZones
+            .Select(x => x.Id)
+            .ToHashSet();
+
+        // DELETE RELATIONSHIP
+        foreach (var zoneEntity in zonesDictionary.Values)
+        {
+            if (zoneEntity.GroupId == groupId &&
+                !requestedZoneIds.Contains(zoneEntity.Id))
+            {
+                zoneEntity.GroupId = null;
+            }
+        }
+
+        // CREATE / UPDATE RELATIONSHIP
+        foreach (var zoneId in requestedZoneIds)
+        {
+            if (!zonesDictionary.TryGetValue(
+                    zoneId,
+                    out var zoneEntity))
+            {
+                return;
+            }
+
+            zoneEntity.GroupId = groupId;
+        }
+    }
+
     #endregion
 }

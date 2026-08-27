@@ -99,7 +99,7 @@ public class ZoneRepository : IZoneRepository
             }
 
             entity.Name = zone.Name;
-            entity.GroupId = null;
+            entity.GroupId = entity.GroupId;
             entity.State = zone.State;
             entity.Type = zone.Type;
         }
