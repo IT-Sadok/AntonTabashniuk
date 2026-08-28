@@ -4,7 +4,6 @@ using SecurityMonitor.Application.Devices.Groups.Create;
 using SecurityMonitor.Application.Devices.Groups.Delete;
 using SecurityMonitor.Application.Devices.Groups.Update;
 using SecurityMonitor.Application.Devices.Groups.Zones.Models;
-using SecurityMonitor.Domain.Devices;
 
 namespace SecurityMonitor.Api.Endpoints.Device.Groups.Mappers;
 

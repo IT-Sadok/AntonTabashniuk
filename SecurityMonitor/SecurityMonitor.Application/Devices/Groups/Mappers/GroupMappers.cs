@@ -9,22 +9,12 @@ namespace SecurityMonitor.Application.Devices.Groups.Mappers;
 public static class GroupMappers
 {
     #region Create
-    public static CreateGroupsResponse ToCreateResponce(this List<Group> Groups, int deviceId)
+    public static CreateGroupsResponse ToCreateResponce(this IReadOnlyList<int> Groups, int deviceId)
     {
         return new CreateGroupsResponse(
             deviceId,
-            Groups.Select(z => z.ToCreateResponce()).ToList()
+            [.. Groups.Select(z => z)]
         );
-    }
-    public static CreateGroupModel ToCreateResponce(this Group Group)
-    {
-        return new CreateGroupModel(
-            Group.DeviceId,
-            Group.Id,
-            Group.Name,
-            Group.State,
-            [.. Group.Zones.Select(x=> x.Id)]
-            );
     }
 
     public static List<Group> ToDomain(this CreateGroupsCommand command)
@@ -44,7 +34,7 @@ public static class GroupMappers
     #endregion
 
     #region Update
-    public static UpdateGroupsResponse ToUpdateResponce(this List<Group> Groups, int deviceId)
+    public static UpdateGroupsResponse ToUpdateResponce(this IReadOnlyList<Group> Groups, int deviceId)
     {
         return new UpdateGroupsResponse(
             deviceId,

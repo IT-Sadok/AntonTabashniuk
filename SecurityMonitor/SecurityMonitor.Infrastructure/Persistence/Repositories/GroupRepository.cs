@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Application.Devices.Groups;
-using SecurityMonitor.Domain.Devices;
 using SecurityMonitor.Domain.Devices.Groups.Zones;
 using SecurityMonitor.Infrastructure.Persistence.Entities;
 using SecurityMonitor.Infrastructure.Persistence.Mappers;
@@ -17,7 +16,7 @@ public class GroupRepository : IGroupRepository
         _dbContext = dbContext;
     }
 
-    public async Task<List<Group>> UpdateAsync(
+    public async Task<IReadOnlyList<Group>> UpdateAsync(
         int deviceId,
         List<Group> groups,
         CancellationToken cancellationToken)
@@ -39,7 +38,7 @@ public class GroupRepository : IGroupRepository
             .Select(x => x.ToDomain())];
     }
 
-    public async Task<List<Group>> AddRangeAsync(
+    public async Task<IReadOnlyList<int>> AddRangeAsync(
         int deviceId,
         List<Group> groups,
         CancellationToken cancellationToken)
@@ -85,7 +84,7 @@ public class GroupRepository : IGroupRepository
 
         await SaveChangesAsync(cancellationToken);
 
-        return [.. entities.Select(x => x.ToDomain())];
+        return [.. entities.Select(x => x.Id)];
     }
 
     public async Task<bool> DeleteAsync(int deviceId, IReadOnlyList<int> groupsIds, CancellationToken cancellationToken)
@@ -103,7 +102,7 @@ public class GroupRepository : IGroupRepository
             .ExecuteDeleteAsync(cancellationToken) > 0;
     }
 
-    public async Task<List<Group>> GetAllAsync(IReadOnlyList<int> groups, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Group>> GetAllAsync(IReadOnlyList<int> groups, CancellationToken cancellationToken)
     {
         return await _dbContext.Groups
              .Where(x => groups.Contains(x.Id))
@@ -111,7 +110,7 @@ public class GroupRepository : IGroupRepository
              .ToListAsync(cancellationToken);
     }
     
-    public async Task<List<string>> GetExistingGroupNamesAsync(int deviceId, IReadOnlyCollection<string> groupNames, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<string>> GetExistingGroupNamesAsync(int deviceId, IReadOnlyCollection<string> groupNames, CancellationToken cancellationToken)
     {
         return await _dbContext.Groups
             .Where(x => x.DeviceId == deviceId && groupNames.Contains(x.Name))

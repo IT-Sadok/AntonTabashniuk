@@ -4,6 +4,3 @@ public sealed record DeleteGroupsRequest(
     int DeviceId,
     IReadOnlyList<int> GroupIds
     );
-
-
-    

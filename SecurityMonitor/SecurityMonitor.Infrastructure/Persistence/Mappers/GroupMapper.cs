@@ -17,7 +17,6 @@ public static class GroupMapper
             DeviceId = model.DeviceId,
             State = model.State,
             Name = model.Name,
-            //Zones = model.Zones.Select(x => x.ToEntity()).ToList()
         };
     }
     public static List<Group> ToDomain(this List<GroupEntity> entity)

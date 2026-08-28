@@ -13,14 +13,13 @@ public class DeleteGroupsHandler : IRequestHandler<DeleteGroupsCommand, Result<b
         DeleteGroupsCommand command,
         CancellationToken cancellationToken)
     {
-        if (command.GroupIds is not null && command.GroupIds.Count > 0)
+        if (command.GroupIds is null || command.GroupIds.Count == 0)
         {
-            if (await repository.DeleteAsync(command.DeviceId, command.GroupIds, cancellationToken))
-            {
-                return Result<bool>.Success(true);
-            }
+            return Result<bool>.Failure("Failed to delete groups.");
         }
 
-        return Result<bool>.Failure("Failed to delete groups.");
+        return await repository.DeleteAsync(command.DeviceId, command.GroupIds, cancellationToken)
+            ? Result<bool>.Success(true) 
+            : Result<bool>.Failure("Failed to delete groups.");
     }
 }
