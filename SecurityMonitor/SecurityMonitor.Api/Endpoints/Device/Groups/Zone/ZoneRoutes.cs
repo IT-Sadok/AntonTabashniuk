@@ -1,4 +1,4 @@
-﻿namespace SecurityMonitor.Api.Endpoints.Zone;
+﻿namespace SecurityMonitor.Api.Endpoints.Device.Groups.Zone;
 
 public static class ZoneRoutes
 {

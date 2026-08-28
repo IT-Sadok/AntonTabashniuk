@@ -1,11 +1,11 @@
-﻿using SecurityMonitor.Api.Endpoints.Zone.Models;
-using SecurityMonitor.Api.Endpoints.Zone.Requests;
+﻿using SecurityMonitor.Api.Endpoints.Device.Groups.Zone.Models;
+using SecurityMonitor.Api.Endpoints.Device.Groups.Zone.Requests;
 using SecurityMonitor.Application.Devices.Groups.Zones.Create;
 using SecurityMonitor.Application.Devices.Groups.Zones.Delete;
 using SecurityMonitor.Application.Devices.Groups.Zones.Models;
 using SecurityMonitor.Application.Devices.Groups.Zones.Update;
 
-namespace SecurityMonitor.Api.Endpoints.Zone.Mappers;
+namespace SecurityMonitor.Api.Endpoints.Device.Groups.Zone.Mappers;
 
 public static class ZoneMappings
 {

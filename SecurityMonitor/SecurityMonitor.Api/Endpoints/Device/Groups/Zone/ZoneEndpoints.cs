@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SecurityMonitor.Api.Endpoints.Zone.Mappers;
-using SecurityMonitor.Api.Endpoints.Zone.Models;
-using SecurityMonitor.Api.Endpoints.Zone.Requests;
+using SecurityMonitor.Api.Endpoints.Device.Groups.Zone.Mappers;
+using SecurityMonitor.Api.Endpoints.Device.Groups.Zone.Requests;
 using SecurityMonitor.Application.Common;
 using SecurityMonitor.Application.Devices.Groups.Zones.Create;
 using SecurityMonitor.Application.Devices.Groups.Zones.Delete;
 using SecurityMonitor.Application.Devices.Groups.Zones.Update;
 
-namespace SecurityMonitor.Api.Endpoints.Zone;
+namespace SecurityMonitor.Api.Endpoints.Device.Groups.Zone;
 
 public static class ZoneEndpoints
 {

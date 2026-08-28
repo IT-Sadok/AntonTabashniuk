@@ -1,4 +1,4 @@
-﻿using SecurityMonitor.Api.Endpoints.Zone.Models;
+﻿using SecurityMonitor.Api.Endpoints.Device.Groups.Zone.Requests;
 using SecurityMonitor.Domain.Devices.Enums;
 
 namespace SecurityMonitor.Api.Endpoints.Device.Requests;

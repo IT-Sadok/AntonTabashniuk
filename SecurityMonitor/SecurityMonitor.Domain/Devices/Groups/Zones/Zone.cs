@@ -11,6 +11,12 @@ public class Zone
     public ZoneState State { get; set; }
     public ZoneType Type { get; set; }
 
+    public Zone(int id, int deviceId)
+    {
+        Id = id;
+        DeviceId = deviceId;
+    }
+
     public Zone(
         int id,
         int deviceId,
@@ -25,14 +31,5 @@ public class Zone
         Name = name;
         State = state;
         Type = type;
-    }
-
-    public void Update(Zone zone)
-    {
-        Name = zone.Name;
-        DeviceId = zone.DeviceId;
-        GroupId = zone.GroupId;
-        State = zone.State;
-        Type = zone.Type;
     }
 }
